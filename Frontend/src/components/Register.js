@@ -1,3 +1,4 @@
+/*
 import axios from "axios";
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -260,3 +261,4 @@ function Register() {
 }
 
 export default Register;
+*/
