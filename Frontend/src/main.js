@@ -1,7 +1,160 @@
 import React from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useRef } from 'react';
 import maleavatar from "./images/MaleAvatar.png"
 import './main.css'
 const HomePage = () => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [calendarVisible, setCalendarVisible] = useState(false);
+
+  // Ref for detecting clicks outside the date picker
+  const containerRef = useRef(null);
+
+  // Month names (for the month dropdown)
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+
+  // Close the calendar when clicking outside the component
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setCalendarVisible(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
+  // Format date as YYYY-MM-DD
+  const formatDate = (date) => {
+    if (!date) return "";
+    const day = ("0" + date.getDate()).slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
+  // When a day is clicked, update the selected date and close the calendar
+  const handleDayClick = (day) => {
+    const newDate = new Date(currentYear, currentMonth, day);
+    setSelectedDate(newDate);
+    setCalendarVisible(false);
+  };
+
+  // Render the calendar days
+  const renderCalendarDays = () => {
+    // Determine the first day of the month (0 = Sunday)
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    // Get total days in the month
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    const days = [];
+    // Add empty placeholders for days before the first day
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<span key={`empty-${i}`} className="empty"></span>);
+    }
+    // Add days for the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const thisDay = new Date(currentYear, currentMonth, day);
+      const today = new Date();
+      const isToday =
+        thisDay.getDate() === today.getDate() &&
+        thisDay.getMonth() === today.getMonth() &&
+        thisDay.getFullYear() === today.getFullYear();
+      const isSelected =
+        selectedDate &&
+        thisDay.getDate() === selectedDate.getDate() &&
+        thisDay.getMonth() === selectedDate.getMonth() &&
+        thisDay.getFullYear() === selectedDate.getFullYear();
+
+      days.push(
+        <span
+          key={day}
+          className={`day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""}`}
+          onClick={() => handleDayClick(day)}
+        >
+          {day}
+        </span>
+      );
+    }
+    return days;
+  };
+
+  // Handle navigation to the previous month
+  const handlePrevMonth = (e) => {
+    e.stopPropagation();
+    let newMonth = currentMonth - 1;
+    let newYear = currentYear;
+    if (newMonth < 0) {
+      newMonth = 11;
+      newYear--;
+    }
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
+
+  // Handle navigation to the next month
+  const handleNextMonth = (e) => {
+    e.stopPropagation();
+    let newMonth = currentMonth + 1;
+    let newYear = currentYear;
+    if (newMonth > 11) {
+      newMonth = 0;
+      newYear++;
+    }
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
+
+  // Handle month dropdown change
+  const handleMonthChange = (e) => {
+    setCurrentMonth(parseInt(e.target.value, 10));
+  };
+
+  // Handle year dropdown change
+  const handleYearChange = (e) => {
+    setCurrentYear(parseInt(e.target.value, 10));
+  };
+
+
+
+
+
+
+
+
+
+
+  useEffect(() => {
+    const handleClick = (event) => {
+      const isToggle = event.target.closest(".dropdown-toggle");
+      
+      document.querySelectorAll(".dropdown-menu.show").forEach((menu) => {
+        if (!isToggle || menu !== isToggle.nextElementSibling) {
+          menu.classList.remove("show");
+        }
+      });
+  
+      if (isToggle) {
+        event.stopPropagation();
+        isToggle.nextElementSibling.classList.toggle("show");
+      }
+    };
+  
+    document.addEventListener("click", handleClick);
+  
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
+
+
   return (
     
   <>

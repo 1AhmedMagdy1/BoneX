@@ -10,7 +10,7 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import "./styles.css"; // Import the custom CSS for animations
+//import "./styles.css"; // Import the custom CSS for animations
 import axios from "axios";
 
 const Changepassword = () => {

@@ -5,7 +5,7 @@
 .main-container1 {
   margin: 50px auto !important;
   width: 80% !important;
-  height: 100vh !important;
+  height: auto !important;
 }
 .head {
   font-size: 32px;
@@ -20,7 +20,7 @@
 }
 /*progress bar*/
 
-.progress-bar {
+.progress-bar1 {
   width: 50%;
   display: flex;
   justify-content: space-between;
@@ -61,9 +61,10 @@
 
 
   /* Info Box */
-  .info-box {
+  .info-box1 {
     position: absolute;
-    top: 225px;    left: 880px;
+    top: 225px;  
+    left: 1080px;
     background-color: #33b6c4;
     color: white;
   padding: 20px;

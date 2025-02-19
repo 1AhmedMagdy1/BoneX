@@ -3,6 +3,17 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
+(function () {
+  const originalSetItem = sessionStorage.setItem;
+  sessionStorage.setItem = function (key, value) {
+    const event = new Event('sessionStorageChanged');
+    event.key = key;
+    event.newValue = value.toString();
+    window.dispatchEvent(event);
+    originalSetItem.apply(this, arguments);
+  };
+})();
+
 root.render(
   <React.StrictMode>
 

@@ -14,6 +14,10 @@ import AcademicDetails from './doctor2';
 import Doctor3 from './doctor3';
 import Register from './Register';
 import HomepageD from './main';
+import Footer from './footer.jsx'
+import UploadComponent from './XrayCheck.jsx'
+import Home from './Home.js'
+import Doctors from './Doctors.js'
 function App() {
   return (
     
@@ -21,13 +25,16 @@ function App() {
     <Router>
     <Nav />
       <Routes>
-        <Route path="/" element={<HomepageD />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/doctors" element={<Doctors />} />
+        <Route path="/homed" element={<HomepageD />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Doctor1" element={<RegisterDoctor1 />} />
         <Route path="/Doctor3" element={<Doctor3 />} />
         <Route path="/Doctor2" element={<AcademicDetails />} />
+        <Route path="/xray" element={<UploadComponent />} />
       
-
+       
 
 
 
@@ -40,6 +47,7 @@ function App() {
         <Route path="/changepassword" element={<Changepassword />} />
 
       </Routes>
+    <Footer />
     </Router>
     
   );

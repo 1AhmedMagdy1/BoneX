@@ -7,9 +7,9 @@
 
 .main-container2 {
   
-  margin: 50px auto;
-  width: 80%;
-  height: 100vh;
+  margin: 50px auto !important;
+  width: 80% !important;
+  height: auto !important;
 }
 .head {
   font-size: 32;
@@ -24,7 +24,7 @@
 }
 /*progress bar*/
 
-.progress-bar {
+.progress-bar2 {
   width: 50%;
   display: flex;
   justify-content: space-between;
@@ -65,7 +65,7 @@
 
 
   /* Info Box */
-  .info-box {
+  .info-box2 {
     position: absolute;
     top: 225px;
     left: 1374px;
@@ -119,7 +119,7 @@
     border-radius: 15px;
     width: 50%;
     
-    height: 700px;
+    height: auto;
 }
 
 

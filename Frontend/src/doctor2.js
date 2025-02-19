@@ -15,7 +15,7 @@ const AcademicDetails = () => {
       <div className="div-line"></div>
  {/*<!--Progress Bar-->*/ } 
 
-      <div className="progress-bar">
+      <div className="progress-bar2">
         <div className="circle done">
           <img src={personalImg} alt="Personal Info" />
         </div>
@@ -32,7 +32,7 @@ const AcademicDetails = () => {
    {/*<!--separator-->*/ } 
    {/*<!--Info Box-->*/ } 
     
-      <div className="info-box">
+      <div className="info-box2">
         <h2>Why Bonex?</h2>
         <hr />
         <ul>
@@ -63,7 +63,7 @@ const AcademicDetails = () => {
           </div>
           <div className="form-row">
             <label for="c"  >Graduation Year</label>
-            <input type="number" id="c" />
+            <input type="number" id="c" placeholder="2005"/>
           </div>
           <div className="form-row">
             <label for="a"  >Degree Certificate</label>

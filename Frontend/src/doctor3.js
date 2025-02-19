@@ -13,7 +13,7 @@ const Doctor3 = () => {
       
        {/*<!--Progress Bar-->*/ } 
 
-       <div className="progress-bar">
+       <div className="progress-bar3">
         <div className="circle done">
           <img src={personalImg} alt="Personal Info" />
         </div>
@@ -30,7 +30,7 @@ const Doctor3 = () => {
    {/*<!--separator-->*/ } 
 
      
-      <div className="info-box">
+      <div className="info-box3">
         <h2>Why Bonex?</h2>
         <hr />
         <ul>
@@ -79,7 +79,7 @@ const Doctor3 = () => {
     </div>
     <div className="form-row">
         <label for="c" >Years of experience</label>
-        <input type="number" id="c" />
+        <input type="number" id="c" placeholder='5 Years'/>
     </div>
     <div className="form-row">
         <label for="a">consultion Fees </label>

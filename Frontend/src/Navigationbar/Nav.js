@@ -1,20 +1,54 @@
-import React from 'react'
-import './nav.css'
+import React, { useEffect,useState,useNavigate } from "react";
+
+import { Link } from "react-router-dom";
+import avtmale from '../images/avatar-male.jpg'
+import avtfemale from '../images/avatarfm.webp'
+import notification from '../images/notification.png'
+import "./nav.css";
+
 const Nav = () => {
+  const [user, setUser] = useState(null);
+  const [anUser, setAnUser] = useState("false");
+
+  useEffect(() => {
+    const data = sessionStorage.getItem('userInfo');
+    
+
+    if (data) {
+      console.log('entered');
+      
+
+      setAnUser("true")
+     
+      
+      const parsedUser = JSON.parse(data);
+      console.log('parsedUser:', parsedUser);
+      setUser(parsedUser);
+    }
+  }, []);
+
   return (
-    <div>
-        <nav className="navbar">
-        <a href="#">X-ray Checker</a>
-        <a href="#">Doctors</a>
-        <a href="#">Bonex</a>
-        <a href="#">Settings</a>
-        <a href="#">About Us</a>
-        <a href="#">Login</a>
-        <a href="#">SignUp</a>
-        </nav>
+    <nav className="navbar">
+      <Link to="/xray">X-ray Checker</Link>
+      <Link to="/chat">Chat messages</Link>
+      <Link to="/doctors">Doctors</Link>
+      <Link to="/">Bonex</Link>
+      
+      {anUser === "true" ? (
+        <div className="user-logged">
+          <span className="user-name">{user.firstName}</span>
+          <img src={(user.gender==="1"?avtmale:avtfemale)} alt="user-pic" />
+          <img src={notification} alt="Notification Icon" />
+        </div>
+      ) : (
+        <>
+          <Link to="/login">Login</Link>
+          <Link to="/register">SignUp</Link>
+        </>
+      )}
+    
+    </nav>
+  );
+};
 
-    </div>
-  )
-}
-
-export default Nav
+export default Nav;

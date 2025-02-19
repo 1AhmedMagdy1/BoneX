@@ -29,21 +29,26 @@ function Login() {
     if (formData.username !== "" && formData.password !== "") {
       try {
         const response = await axios.post(
-          "https://localhost:7294/api/Login",
+          "http://bonex.runasp.net/Auth",
           {
-            UserName: formData.username,
-            Password: formData.password,
+            email: formData.username,
+            password: formData.password,
           },
           {
-            withCredentials: true, // Ensures that cookies (AuthToken) are sent
+            //withCredentials: true, // Ensures that cookies (AuthToken) are sent
           }
         );
+  //      console.log('entered');
+        
+//      console.log(response.data);
+      
+        window.sessionStorage.setItem("anuser", true);
 
-        window.sessionStorage.setItem("IsUserActive", "true");
-        window.sessionStorage.setItem("UserInfo", JSON.stringify(response.data.user));
+        window.sessionStorage.setItem("userInfo", JSON.stringify(response.data));
 
         // Only navigate if the AuthToken is retrieved or exists
         navigate("/");
+        window.location.reload(true);
       } catch (error) {
         console.error("Login failed:", error);
         setErrorMessage("Username or Password is incorrect"); // Set error message

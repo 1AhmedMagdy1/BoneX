@@ -6,7 +6,12 @@
       --secondary-accent: #088395
       --dark-color: #071952
     */
+body{
 
+background-color:#EBF4F6 !important;
+background-image: none !important;
+
+}
     :root {
       --bg-color: #EBF4F6 !important ;
       --accent-color: #37B7C3 !important ;
@@ -80,7 +85,7 @@
     }
     /* Male Card: Use secondary accent -> accent gradient */
     .doctor-card.male {
-      background: linear-gradient(135deg, var(--secondary-accent), var(--accent-color)) !important ;
+      background: linear-gradient(135deg, #088395, #37B7C3) !important ;
     }
     /* Female Card: example if needed !important ; not used in this snippet */
     .doctor-card.female {
@@ -206,7 +211,7 @@
       background: #00bcd4 !important ;
     }
     .purple {
-      background: var(--secondary-accent) !important ;
+      background: #088395 !important ;
     }
     .red {
       background: #ff6b6b !important ;
@@ -215,7 +220,7 @@
       background: #ffa502 !important ;
     }
     .blue {
-      background: var(--accent-color) !important ;
+      background: #37B7C3 !important ;
     }
     .green {
       background: #2ecc71 !important ;
@@ -272,7 +277,7 @@
       transition: border-color 0.3s ease, box-shadow 0.3s ease !important ;
     }
     .search-bar input:focus {
-      border-color: var(--accent-color) !important ;
+      border-color: #37B7C3 !important ;
       box-shadow: 0 0 5px rgba(55, 183, 195, 0.3) !important ;
     }
     .search-bar:hover .search-icon {
@@ -301,7 +306,7 @@
     }
     .filter-dropdown select:hover,
     .filter-dropdown select:focus {
-      border-color: var(--accent-color) !important ;
+      border-color: #37B7C3 !important ;
       box-shadow: 0 0 5px rgba(55, 183, 195, 0.3) !important ;
     }
 
@@ -316,7 +321,7 @@
       overflow: hidden !important;
     }
     .appointment-table thead {
-      background: var(--dark-color) !important ;
+      background: #071952 !important ;
       color: #fff !important ;
     }
     .appointment-table th,
@@ -341,7 +346,7 @@
       border-radius: 50% !important ;
       margin-right: 10px !important ;
       object-fit: cover !important ;
-      border: 2px solid var(--accent-color) !important ;
+      border: 2px solid #37B7C3 !important ;
     }
 
     /* Status Badges */
@@ -376,11 +381,11 @@
     .dropdown-toggle {
       cursor: pointer !important ;
       font-size: 1.2em !important ;
-      color: var(--accent-color) !important ;
+      color: #37b7c3 !important ;
       transition: color 0.3s ease !important ;
     }
     .dropdown-toggle:hover {
-      color: var(--secondary-accent) !important ;
+      color: #088395 !important ;
     }
     .dropdown-menu {
       display: none !important ;

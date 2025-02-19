@@ -4,7 +4,7 @@
   
     margin: 50px auto;
     width: 80%;
-    height: 100vh;
+    height: auto;
   }
   .head {
     font-size: 32;
@@ -19,7 +19,7 @@
   }
   /*progress bar*/
   
-  .progress-bar {
+  .progress-bar3 {
     width: 50%;
     display: flex;
     justify-content: space-between;
@@ -60,7 +60,7 @@
   
   
   /* Info Box */
-  .info-box {
+  .info-box3 {
       position: absolute;
       top: 225px;
       left: 1374px;
@@ -152,7 +152,7 @@ color: #5E6366;
     padding: 40px;
     border-radius: 15px;
     width: 50%;
-    height: 700px;
+    height: auto;
 }
 
 

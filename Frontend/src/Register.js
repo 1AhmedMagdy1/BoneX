@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from './images/Logo.png'
+import { Link } from "react-router-dom";
 import './register.css'
 const Register = () => {
   return (
@@ -78,10 +79,10 @@ const Register = () => {
         </div>
         <div className="info-section">
             <h3>Are You a Doctor?</h3>
-            <a href="#" className="signup-btn">
+            <Link to="/Doctor1" className="signup-btn">
                 sign up here 
                 <i className='bx bx-chevrons-right'></i> 
-            </a>
+            </Link>
         </div>
         
         
