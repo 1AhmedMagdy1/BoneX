@@ -43,10 +43,13 @@ function Login() {
 //      console.log(response.data);
       
         window.sessionStorage.setItem("anuser", true);
-
+         
         window.sessionStorage.setItem("userInfo", JSON.stringify(response.data));
 
         // Only navigate if the AuthToken is retrieved or exists
+        
+        
+        
         navigate("/");
         window.location.reload(true);
       } catch (error) {

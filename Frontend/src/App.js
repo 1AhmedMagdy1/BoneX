@@ -18,6 +18,7 @@ import Footer from './footer.jsx'
 import UploadComponent from './XrayCheck.jsx'
 import Home from './Home.js'
 import Doctors from './Doctors.js'
+import Chatpage from './Chatpage.js' 
 function App() {
   return (
     
@@ -27,6 +28,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/doctors" element={<Doctors />} />
+        <Route path="/chat" element={<Chatpage />} />
         <Route path="/homed" element={<HomepageD />} />
         <Route path="/register" element={<Register />} />
         <Route path="/Doctor1" element={<RegisterDoctor1 />} />

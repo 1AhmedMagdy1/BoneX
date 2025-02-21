@@ -195,7 +195,7 @@ const HomePage = () => {
           <span className="material-icons">calendar_today</span>
         </div>
         <div>
-          <h3>24.4k</h3>
+          <h3>250</h3>
           <p>Appointments</p>
         </div>
       </div>
@@ -204,7 +204,7 @@ const HomePage = () => {
           <span className="material-icons">person</span>
         </div>
         <div>
-          <h3>166.3k</h3>
+          <h3>250</h3>
           <p>Total Patients</p>
         </div>
       </div>
@@ -213,7 +213,7 @@ const HomePage = () => {
           <span className="material-icons">medical_services</span>
         </div>
         <div>
-          <h3>53.5k</h3>
+          <h3>150</h3>
           <p>Clinic Consulting</p>
         </div>
       </div>
@@ -222,8 +222,8 @@ const HomePage = () => {
           <span className="material-icons">videocam</span>
         </div>
         <div>
-          <h3>28.0k</h3>
-          <p>Video Consulting</p>
+          <h3>100</h3>
+          <p>online Consulting</p>
         </div>
       </div>
       </div>
@@ -243,7 +243,7 @@ const HomePage = () => {
           <span className="material-icons">cancel</span>
         </div>
         <div>
-          <h3>2.5k</h3>
+          <h3>10</h3>
           <p>Canceled Appointments</p>
         </div>
       </div>

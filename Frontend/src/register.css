@@ -102,7 +102,7 @@ z-index: 10000 !important ;
         transition: .25s !important ;
     }
 
-    .input-group:focus-within span{
+    .input-group span{
         position: relative !important ;
         color: #5E6366 !important ;
         background-color: red !important ;
@@ -140,8 +140,8 @@ z-index: 10000 !important ;
         }
         .social-login {
             text-align: center !important ;
-            margin-top: 50px !important ; 
-            margin-left: 339px !important ;
+            margin-top: 57px !important ; 
+            margin-left: 268px !important ;
 
         }
         .social-login p {
