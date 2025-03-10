@@ -3,7 +3,10 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useRef } from 'react';
 import maleavatar from "./images/MaleAvatar.png"
+import RechartsPieChart from './RechartsPieChart'
 import './main.css'
+import { Link } from 'react-router-dom';
+
 const HomePage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -125,6 +128,93 @@ const HomePage = () => {
 
 
 
+const appointments = [
+  {
+    id: 1,
+    name: "John Doe",
+    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    date: "2025-02-20 10:00 AM to 11:00 AM",
+    gender: "Male",
+    dob: "1985-04-12",
+    type: "Clinic",
+    status: "Booked",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    date: "2025-02-20 11:30 AM to 12:30 PM",
+    gender: "Female",
+    dob: "1990-08-25",
+    type: "Online",
+    status: "Completed",
+  },
+  {
+    id: 3,
+    name: "Robert Brown",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    date: "2025-02-20 02:00 PM to 03:00 PM",
+    gender: "Male",
+    dob: "1978-12-05",
+    type: "Clinic",
+    status: "Canceled",
+  },
+  {
+    id: 4,
+    name: "Michael Green",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    date: "2025-02-20 03:00 PM to 04:00 PM",
+    gender: "Male",
+    dob: "1992-06-15",
+    type: "Online",
+    status: "NoShow",
+  },
+];
+
+const AppointmentRow = ({ appointment }) => {
+  return (
+    <tr>
+      <td>
+        <div className="patient-info">
+          <img src={appointment.image} alt={appointment.name} />
+          <span>{appointment.name}</span>
+        </div>
+      </td>
+      <td>{appointment.date}</td>
+      <td>{appointment.gender}</td>
+      <td>{appointment.dob}</td>
+      <td>{appointment.type}</td>
+      <td>
+        <span className={`status status-${appointment.status.toLowerCase()}`}>
+          {appointment.status}
+        </span>
+      </td>
+      <td>
+        <div className="dropdown">
+          <i className="fas fa-ellipsis-h dropdown-toggle" title="Actions"></i>
+          <div className="dropdown-menu">
+            <Link href="#" className="dropdown-item">
+              <i className="fas fa-comment-dots"></i>Message Patient
+            </Link>
+            <a href="#" className="dropdown-item">
+              <i className="fas fa-info-circle"></i>View More Details
+            </a>
+            <a href="#" className="dropdown-item">
+              <i className="fas fa-times"></i>Cancel Appointment
+            </a>
+            <a href="#" className="dropdown-item">
+              <i className="fas fa-edit"></i>Edit Time
+            </a>
+            <Link to={'/meet'} className="dropdown-item">
+            <li className="material-icons" >video_call</li>
+            Start Video Call
+            </Link>
+          </div>
+        </div>
+      </td>
+    </tr>
+  );
+};
 
 
 
@@ -160,22 +250,22 @@ const HomePage = () => {
   <>
   <div className="homebody">
 
-    <div className="doctor-card male">
+    <div className="doctorh-card male   animate__animated  animate__backInUp">
 
-      <div className="docinfo">
-        <p className="greeting">Welcome back, Have a nice day at work!</p>
-        <h1 className="DoctorName">Dr. John Smith</h1>
-        <p className="specialities">MD, DM (Internal Medicine), FACP</p>
-        <h2 className="todaysApp">
+      <div className="docinfo  animate__animated  animate__jackInTheBox animate__delay-1s">
+        <p className="greeting  ">Welcome back, Have a nice day at work!</p>
+        <h1 className="DoctorName ">Dr. John Smith</h1>
+        <p className="specialities ">MD, DM (Internal Medicine), FACP</p>
+        <h2 className="todaysApp ">
           You have total <span>10 Appointments</span> today!
         </h2>
       </div>
       
-      <img src={maleavatar} alt="Male Doctor Avatar" />
+      <img src={maleavatar} alt="Male Doctor Avatar" className='animate__animated  animate__backInRight animate__delay-1s'/>
     </div>
 
     
-    <h4
+    <h4 className='animate__animated  animate__backInLeft'
       style={{
         fontSize: '32px',
         color: 'var(--secondary-accent)',
@@ -189,8 +279,10 @@ const HomePage = () => {
 
     
     <div className="cards-container">
-      <div className='r1' >
-      <div className="card purple">
+     <div className='wrapcm' >
+
+      <div className='r1     animate__animated  animate__backInLeft  animate__delay-1s' >
+      <div className="cardh purple">
         <div className="icon-container">
           <span className="material-icons">calendar_today</span>
         </div>
@@ -199,7 +291,7 @@ const HomePage = () => {
           <p>Appointments</p>
         </div>
       </div>
-      <div className="card red">
+      <div className="cardh red">
         <div className="icon-container">
           <span className="material-icons">person</span>
         </div>
@@ -208,7 +300,7 @@ const HomePage = () => {
           <p>Total Patients</p>
         </div>
       </div>
-      <div className="card orange">
+      <div className="cardh orange">
         <div className="icon-container">
           <span className="material-icons">medical_services</span>
         </div>
@@ -217,7 +309,7 @@ const HomePage = () => {
           <p>Clinic Consulting</p>
         </div>
       </div>
-      <div className="card blue">
+      <div className="cardh blue">
         <div className="icon-container">
           <span className="material-icons">videocam</span>
         </div>
@@ -228,8 +320,8 @@ const HomePage = () => {
       </div>
       </div>
 
-      <div className='r2'>
-      <div className="card green">
+      <div className='r2 animate__animated  animate__backInLeft animate__delay-2s'>
+      <div className="cardh green">
         <div className="icon-container">
           <span className="material-icons">event_busy</span>
         </div>
@@ -238,7 +330,7 @@ const HomePage = () => {
           <p>No-Show Rates</p>
         </div>
       </div>
-      <div className="card teal">
+      <div className="cardh teal">
         <div className="icon-container">
           <span className="material-icons">cancel</span>
         </div>
@@ -248,7 +340,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="card indigo">
+      <div className="cardh indigo">
         <div className="icon-container">
           <span className="material-icons">star</span>
         </div>
@@ -259,7 +351,7 @@ const HomePage = () => {
       </div>
   
     
-      <div className="card cyan">
+      <div className="cardh cyan">
         <div className="icon-container">
           <span className="material-icons">schedule</span>
         </div>
@@ -269,6 +361,9 @@ const HomePage = () => {
         </div>
       </div>
       </div>
+      </div>
+     
+      <RechartsPieChart />
     </div>
     
 
@@ -332,162 +427,10 @@ const HomePage = () => {
           </tr>
         </thead>
         <tbody>
-       
-          <tr>
-            <td>
-              <div className="patient-info">
-                <img
-                  src="https://randomuser.me/api/portraits/men/1.jpg"
-                  alt="John Doe"
-                />
-                <span>John Doe</span>
-              </div>
-            </td>
-            <td>2025-02-20 10:00 AM to 11:00 AM</td>
-            <td>Male</td>
-            <td>1985-04-12</td>
-            <td>Clinic</td>
-            <td>
-              <span className="status status-booked">Booked</span>
-            </td>
-            <td>
-             
-              <div className="dropdown">
-                <i className="fas fa-ellipsis-h dropdown-toggle" title="Actions"></i>
-                <div className="dropdown-menu">
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-comment-dots"></i>Message Patient
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-info-circle"></i>View More Details
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-times"></i>Cancel Appointment
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-edit"></i>Edit Time
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-          
-          <tr>
-            <td>
-              <div className="patient-info">
-                <img
-                  src="https://randomuser.me/api/portraits/women/2.jpg"
-                  alt="Jane Smith"
-                />
-                <span>Jane Smith</span>
-              </div>
-            </td>
-            <td>2025-02-20 11:30 AM to 12:30 PM</td>
-            <td>Female</td>
-            <td>1990-08-25</td>
-            <td>Online</td>
-            <td>
-              <span className="status status-completed">Completed</span>
-            </td>
-            <td>
-              <div className="dropdown">
-                <i className="fas fa-ellipsis-h dropdown-toggle" title="Actions" ></i>
-                <div className="dropdown-menu">
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-comment-dots"></i>Message Patient
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-info-circle"></i>View More Details
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-times"></i>Cancel Appointment
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-edit"></i>Edit Time
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-          
-          <tr>
-            <td>
-              <div className="patient-info">
-                <img
-                  src="https://randomuser.me/api/portraits/men/3.jpg"
-                  alt="Robert Brown"
-                />
-                <span>Robert Brown</span>
-              </div>
-            </td>
-            <td>2025-02-20 02:00 PM to 03:00 PM</td>
-            <td>Male</td>
-            <td>1978-12-05</td>
-            <td>Clinic</td>
-            <td>
-              <span className="status status-canceled">Canceled</span>
-            </td>
-            <td>
-              <div className="dropdown">
-                <i className="fas fa-ellipsis-h dropdown-toggle" title="Actions"></i>
-                <div className="dropdown-menu">
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-comment-dots"></i>Message Patient
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-info-circle"></i>View More Details
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-times"></i>Cancel Appointment
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-edit"></i>Edit Time
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-       
-          <tr>
-            <td>
-              <div className="patient-info">
-                <img
-                  src="https://randomuser.me/api/portraits/men/4.jpg"
-                  alt="Michael Green"
-                />
-                <span>Michael Green</span>
-              </div>
-            </td>
-            <td>2025-02-20 03:00 PM to 04:00 PM</td>
-            <td>Male</td>
-            <td>1992-06-15</td>
-            <td>Online</td>
-            <td>
-              <span className="status status-noshow">No Show</span>
-            </td>
-            <td>
-              <div className="dropdown">
-                <i className="fas fa-ellipsis-h dropdown-toggle" title="Actions"></i>
-                <div className="dropdown-menu">
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-comment-dots"></i>Message Patient
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-info-circle"></i>View More Details
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-times"></i>Cancel Appointment
-                  </a>
-                  <a href="#" className="dropdown-item">
-                    <i className="fas fa-edit"></i>Edit Time
-                  </a>
-                </div>
-              </div>
-            </td>
-          </tr>
+      
+        {appointments.map((appointment) => (
+          <AppointmentRow key={appointment.id} appointment={appointment} />
+        ))}
         </tbody>
       </table>
     </div>

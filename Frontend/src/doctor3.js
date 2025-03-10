@@ -1,189 +1,256 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import personalImg from "./images/personal.webp";
 import graduateImg from "./images/graduate.webp";
- import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Ensure Bootstrap JS is imported
 import axios from "axios";
 import professionalImg from "./images/professional.png";
+import AwardModal from "./AwardModal";
 import "./doctor3.css";
 
 const Doctor3 = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedAwardFile, setUploadedAwardFile] = useState(null);
+  const [location, setLocation] = useState(null);
 
-  const handleAddClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+const[sh,setsh]=useState(false);
+  
+  // Professional form field states
+  const [clinicName, setClinicName] = useState("");
+  const [experience, setExperience] = useState("");
+  const [docbrief, setDocbrief] = useState("");
+  const [fees, setFees] = useState("");
+  const [hours, setHours] = useState("");
+  const [errors, setErrors] = useState({});
+
+  // Get user geolocation (if needed)
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          console.log("Location:", position.coords);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
     }
-  };
+  }, []);
+
+
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setUploadedFile(file);
-      console.log("Selected file:", file);
-      // Process the file as needed (e.g., upload or store it)
+      setUploadedAwardFile(file);
+      console.log("Selected award file:", file);
     }
   };
 
-  // Form field states for professional details
-  const [clinicName, setClinicName] = useState("");
-  const [experience, setExperience] = useState("");
-  const [fees, setFees] = useState("");
-  const [hours, setHours] = useState("");
+  // Helper: Retrieve an academic file from IndexedDB ("AcademicFilesDB")
+  const getAcademicFileFromDB = async (fileCategory) => {
+    return new Promise((resolve, reject) => {
+      const request = window.indexedDB.open("AcademicFilesDB", 1);
+      request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction("files", "readonly");
+        const store = transaction.objectStore("files");
+        const cursorRequest = store.openCursor();
+        cursorRequest.onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            if (cursor.value.fileCategory === fileCategory) {
+              resolve(cursor.value);
+              return;
+            }
+            cursor.continue();
+          } else {
+            resolve(null);
+          }
+        };
+        cursorRequest.onerror = (event) => {
+          reject(event.target.error);
+        };
+      };
+      request.onerror = (event) => {
+        reject(event.target.error);
+      };
+    });
+  };
 
-  // State to store validation errors
-  const [errors, setErrors] = useState({});
+  // Helper: Retrieve the user picture from IndexedDB ("DoctorFilesDB")
+  const getUserPicFromDB = async () => {
+    return new Promise((resolve, reject) => {
+      const request = window.indexedDB.open("DoctorFilesDB", 1);
+      request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction("files", "readonly");
+        const store = transaction.objectStore("files");
+        const cursorRequest = store.openCursor();
+        cursorRequest.onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            if (cursor.value.fileCategory === "userpic") {
+              resolve(cursor.value);
+              return;
+            }
+            cursor.continue();
+          } else {
+            resolve(null);
+          }
+        };
+        cursorRequest.onerror = (event) => {
+          reject(event.target.error);
+        };
+      };
+      request.onerror = (event) => {
+        reject(event.target.error);
+      };
+    });
+  };
 
-  const handleFormSubmit = async(e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     let formErrors = {};
 
-    // Validate clinic name
+    if (docbrief.trim() === "") {
+      formErrors.docbrief = "The brief is required";
+    }
     if (clinicName.trim() === "") {
       formErrors.clinicName = "Clinic name is required";
     }
-
-    // Validate years of experience (should be a positive number)
     if (!experience || experience <= 0) {
-      formErrors.experience = "Years of experience must be greater than 3";
+      formErrors.experience = "Years of experience must be greater than 0";
     }
-
-    // Validate consultation fees (should be a positive number)
     if (!fees || fees <= 0) {
-      formErrors.fees = "Consultation fees must be greater than 5 $";
+      formErrors.fees = "Consultation fees must be greater than 0";
     }
-
-    // Validate consultation hours (should be a positive number)
     if (!hours || hours <= 0) {
-      formErrors.hours = "Consultation hours must be greater than 1";
+      formErrors.hours = "Consultation hours must be greater than 0";
     }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      return;
     } else {
       setErrors({});
-      console.log("Form submitted successfully:", {
+    }
+
+    // Retrieve stored data from previous pages
+    const doctorDataStr = sessionStorage.getItem("doctorData");
+    const academicDataStr = sessionStorage.getItem("academicData");
+    const doctorData = doctorDataStr ? JSON.parse(doctorDataStr) : {};
+    const academicData = academicDataStr ? JSON.parse(academicDataStr) : {};
+
+    // Combine data from previous pages with current professional details
+    const combinedData = {
+      ...doctorData,
+      ...academicData,
+      professionalData: {
         clinicName,
+        docbrief,
         experience,
         fees,
         hours,
-      });
+        awardFile: uploadedAwardFile ? uploadedAwardFile.name : null,
+      },
+    };
 
-      // Retrieve stored data from previous two pages
-      const doctorDataStr = sessionStorage.getItem("doctorData");
-      const academicDataStr = sessionStorage.getItem("academicData");
-      const doctorData = doctorDataStr ? JSON.parse(doctorDataStr) : {};
-      const academicData = academicDataStr ? JSON.parse(academicDataStr) : {};
+    // Create FormData payload for multipart/form-data submission
+    const formData = new FormData();
 
-      // Prepare professional details from this page
-      const professionalData = {
-        clinicName,
-        experience,
-        fees,
-        hours,
-        awardFile: uploadedFile ? uploadedFile.name : null,
-      };
+    // Append personal details (assuming these fields exist in doctorData)
+    formData.append("email", combinedData.email);
+    formData.append("password", combinedData.password);
+    formData.append("firstName", combinedData.name);
+    formData.append("lastName", combinedData.name);
+    formData.append("dateOfBirth", combinedData.dob);
+    formData.append("gender", combinedData.gender === "male" ? 1 : 2);
+    formData.append("phoneNumber", "+2011155006348");
 
-      // Combine the data from previous pages with professional details
-      const combinedData = {
-        ...doctorData,
-        ...academicData,
-        professionalData,
-      };
-/*{"name":"saad","dob":"1990-02-02","gender":"male","countryCode":"+20","mobile":"+201155006348","email":"saad@test.com","password":"P@ssword123","university":"harvard","gradYear":"2005","degreeCertificate":"sec.css","postGradCertificate":null,"speciality":"sports_medicine","medRegNumber":"4455","professionalData":{"clinicName":"bonex","experience":"5","fees":"48","hours":"6","awardFile":null}}*/ 
-      // Store the combined data in session storage
-      try {
-        console.log('hello');
-        
-          const response = await axios.post(
-            "http://bonex.runasp.net/Auth/register",
-            {
-              
-                "email": combinedData.email,
-                "password": combinedData.password,
-                "firstName": combinedData.name,
-                "lastName": combinedData.name,
-                "dateOfBirth": combinedData.dob,
-                "gender": (combinedData.gender=="male"?1:2),
-                "phoneNumber": "+2011155006348",
-                "doctorInfo": {
-                  "universityName": combinedData.university,
-                  "graduationYear": combinedData.gradYear,
-                  "degreeCertificates": "asadada",
-                  "additionalCertifications": "asdsdadd",
-                  "yearsOfExperience": 25,
-                  "consultationHours": "35",
-                  "consultationFees": 12,
-                  "workplaceName": "Bonex",
-                  "awardsOrRecognitions": "aasaasdsaddd"
-                }
-              
-              
-            },
-            
-          );
+    // Append academic details
+    formData.append("universityName", combinedData.university);
+    formData.append("graduationYear", combinedData.gradYear);
 
+    // Append professional details
+    formData.append("yearsOfExperience", experience);
+    formData.append("consultationHours", hours);
+    formData.append("consultationFees", fees);
+    formData.append("workplaceName", clinicName);
+    formData.append("doctorBrief", docbrief);
 
-     console.log('entered');
-          
-          if(response.status===200){
-        
-          window.sessionStorage.setItem("anuser", true);
-         
-          const doctorData = {combinedData}
-      
-          const userData = {
-              
-            email: combinedData.email,
-            firstName: combinedData.name,
-            lastName: combinedData.name,
-            gender: (combinedData.gender==="male"?1:0),
-           role:"doc" 
-           
-          };
-          
-          
-          sessionStorage.setItem("userInfo", JSON.stringify(userData));
-          
-            
-          
-          
-          
-          
+    // Retrieve files from IndexedDB and append them
+    try {
+      const degreeRecord = await getAcademicFileFromDB("degreeCertificate");
+      if (degreeRecord && degreeRecord.fileData) {
+        formData.append("degreeCertificates", degreeRecord.fileData, degreeRecord.name);
+      }
+      const postGradRecord = await getAcademicFileFromDB("postGradCertificate");
+      if (postGradRecord && postGradRecord.fileData) {
+        formData.append("additionalCertifications", postGradRecord.fileData, postGradRecord.name);
+      }
+      // Get the user picture from DoctorFilesDB
+      const userPicRecord = await getUserPicFromDB();
+      if (userPicRecord && userPicRecord.fileData) {
+        formData.append("userpic", userPicRecord.fileData, userPicRecord.name);
+      }
+    } catch (dbError) {
+      console.error("Error retrieving files from IndexedDB:", dbError);
+    }
 
-            // Clear errors and process form (e.g., call an API)
-    setErrors({});
-    console.log('Form submitted successfully!');
-    
-            
-          // Only navigate if the AuthToken is retrieved or exists
-          navigate("/homed")
-          window.location.reload(true);
-          }
-        } catch (error) {
-          console.error("Login failed:", error);
-         
-          sessionStorage.setItem("completeDoctorData", JSON.stringify(combinedData));
-          console.log("Combined data stored:", combinedData);
+    // Append award/recognition file from the current page if available
+    if (uploadedAwardFile) {
+      formData.append("awardsOrRecognitions", uploadedAwardFile, uploadedAwardFile.name);
+    }
+
+    try {
+      const response = await axios.post(
+        "http://bonex.runasp.net/Doctor/register",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
         }
-
-      // Optionally, process further actions (e.g., navigate to next page)
+      );
+      console.log("API Response:", response.data);
+      if (response.status === 200) {
+        sessionStorage.setItem("anuser", true);
+        const userData = {
+          email: combinedData.email,
+          firstName: combinedData.name,
+          lastName: combinedData.name,
+          gender: combinedData.gender === "male" ? 1 : 0,
+          role: "doc",
+        };
+        sessionStorage.setItem("userInfo", JSON.stringify(userData));
+        navigate("/homed");
+        window.location.reload(true);
+      }
+    } catch (error) {
+      console.error("API call failed:", error);
+      sessionStorage.setItem("completeDoctorData", JSON.stringify(combinedData));
     }
   };
 
   return (
     <div className="main-container3">
-      <h1 className="head">Professional Details</h1>
-      <div className="div-line"></div>
+      <h1 className="head  animate__animated animate__backInDown">Professional Details</h1>
+      <div className="div-line   animate__animated animate__backInDown"></div>
 
       {/* Progress Bar */}
-      <div className="progress-bar3">
+      <div className="progress-bar1 animate__animated animate__backInDown">
         <div className="circle done">
           <img src={personalImg} alt="Personal Info" />
         </div>
         <div className="line"></div>
-        <div className="circle">
+        <div className="circle done">
           <img src={graduateImg} alt="Graduation" />
         </div>
         <div className="line"></div>
@@ -193,95 +260,107 @@ const Doctor3 = () => {
       </div>
 
       {/* Info Box */}
-      <div className="info-box3">
+      <div className="info-box1 animate__animated animate__slideInRight">
         <h2>Why Bonex?</h2>
         <hr />
         <ul>
           <li>
-            • Consult over 10 million existing <span>online patients</span> and
-            acquire new online patients every day.
+            • Consult over 10 million existing <span>online patients</span> and acquire new online patients every day.
           </li>
           <li>
-            • Consult <span>your patient online</span> via multiple channels --
-            Query, Video, and on Phone.
+            • Consult <span>your patient online</span> via multiple channels – Query, Video, and on Phone.
           </li>
           <li>
             • Discuss <span>medical cases</span> with fellow Bonex doctors.
           </li>
           <li>
-            • Increase your <span>online brand</span> by publishing articles and
-            health tips to a large database of our patients.
+            • Increase your <span>online brand</span> by publishing articles and health tips to a large database of our patients.
           </li>
         </ul>
       </div>
 
       {/* Award Section with File Upload */}
-      <div className="award">
-        <h2>Awards/Recognitions </h2>
-        <button onClick={handleAddClick}>+ Add</button>
-        {/* Hidden file input */}
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          style={{ display: "none" }}
-        />
+      <div className="award animate__animated animate__backInLeft">
+        <h2>Awards/Recognitions</h2>
+        <button type="button" onClick={()=>setsh(true)}>
+        Add Award
+       </button>
+       
         <span>
-          Note: If you have trouble in uploading your certificates, please email
-          them to us at Bonex@Bonex.com.
+          Note: If you have trouble uploading your certificates, please email them to us at Bonex@Bonex.com.
         </span>
       </div>
 
-      <div className="div-line" style={{ width: "50%", marginTop: "10px" }}></div>
+      <h2 className="div-line"     style={{ width: "50%", marginTop: "10px" } } ></h2>
 
-      {/* Form Section */}
-      <div className="container3">
+      {/* Professional Details Form */}
+      <div className="container3 animate__animated animate__backInUp">
         <form onSubmit={handleFormSubmit}>
           <div className="form-row">
-            <label htmlFor="clinicName">Current Workplace/ClinicName</label>
+            <label htmlFor="clinicName">About You</label>
             <input
               type="text"
               id="clinicName"
-              placeholder="Enter your ClinicName or address"
+              placeholder="Write a brief about yourself"
+              value={docbrief}
+              onChange={(e) => setDocbrief(e.target.value)}
+            />
+            {errors.docbrief && <span className="error">{errors.docbrief}</span>}
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="clinicName">Current Workplace/Clinic Name</label>
+            <input
+              type="text"
+              id="clinicName"
+              placeholder="Enter your Clinic Name or address"
               value={clinicName}
               onChange={(e) => setClinicName(e.target.value)}
             />
             {errors.clinicName && <span className="error">{errors.clinicName}</span>}
           </div>
+
           <div className="form-row">
-            <label htmlFor="experience">Years of experience</label>
+            <label htmlFor="experience">Years of Experience</label>
             <input
               type="number"
               id="experience"
-              placeholder="5 Years"
+              placeholder="e.g., 5"
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
             />
             {errors.experience && <span className="error">{errors.experience}</span>}
           </div>
+
           <div className="form-row">
             <label htmlFor="fees">Consultation Fees</label>
             <input
               type="number"
               id="fees"
-              placeholder="50 $"
+              placeholder="e.g., 50"
               value={fees}
               onChange={(e) => setFees(e.target.value)}
             />
             {errors.fees && <span className="error">{errors.fees}</span>}
           </div>
+
           <div className="form-row">
-            <label htmlFor="hours">Consultation hours/availability</label>
+            <label htmlFor="hours">Consultation Hours/Availability</label>
             <input
               type="number"
               id="hours"
-              placeholder="6 hours"
+              placeholder="e.g., 6"
               value={hours}
               onChange={(e) => setHours(e.target.value)}
             />
             {errors.hours && <span className="error">{errors.hours}</span>}
           </div>
-          <button type="submit">Submit &amp; Continue</button>
+
+          <AwardModal sh={sh}  onClose={() => setsh(false)} />
+
+          <button type="submit" className="submit-btn">
+            Submit &amp; Continue
+          </button>
         </form>
       </div>
     </div>

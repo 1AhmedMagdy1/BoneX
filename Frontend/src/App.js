@@ -19,6 +19,9 @@ import UploadComponent from './XrayCheck.jsx'
 import Home from './Home.js'
 import Doctors from './Doctors.js'
 import Chatpage from './Chatpage.js' 
+import DoctorProfile from './doctorProfile.js';
+import AwardModal from './AwardModal.js';
+import JitsiMeet from './JitsiMeet.js';
 function App() {
   return (
     
@@ -35,6 +38,9 @@ function App() {
         <Route path="/Doctor3" element={<Doctor3 />} />
         <Route path="/Doctor2" element={<AcademicDetails />} />
         <Route path="/xray" element={<UploadComponent />} />
+        <Route path="/doctorprofile" element={<DoctorProfile />} />
+        <Route path="/wrd" element={<AwardModal />} />
+        <Route path="/meet" element={<JitsiMeet />} />
       
        
 
@@ -49,7 +55,7 @@ function App() {
         <Route path="/changepassword" element={<Changepassword />} />
 
       </Routes>
-    <Footer />
+   
     </Router>
     
   );

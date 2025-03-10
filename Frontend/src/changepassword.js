@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import {
-  Container,
-  Form,
-  Button,
-  Alert,
-  Card,
-  Row,
-  Col,
-} from "react-bootstrap";
-//import "./styles.css"; // Import the custom CSS for animations
 import axios from "axios";
 
 const Changepassword = () => {
@@ -55,138 +45,135 @@ const Changepassword = () => {
         })
         .catch((error) => {
           console.log(error.response.data);
-
           setMessage(error.response.data);
         });
     }
   };
 
   return (
-    <Container className="mt-5 " >
-      <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <Card
-            className={`rounded-lg p-4 shadow-sm border-0 animated-card ${
-              showCard ? "show" : ""
+    <div className="mt-5 container mx-auto px-4">
+      <div className="flex justify-center">
+        <div className="w-full max-w-lg">
+          <div
+            className={`rounded-lg p-6 shadow-sm bg-[#f9f9f9] transition-opacity duration-500 ${
+              showCard ? "opacity-100" : "opacity-0"
             }`}
-            style={{ background: "#f9f9f9" }}
           >
-            <h2 className="text-center mb-4">Change Your Password</h2>
-            <p className="text-center text-muted">
+            <h2 className="text-center text-2xl font-bold mb-4">
+              Change Your Password
+            </h2>
+            <p className="text-center text-gray-600 mb-4">
               Use the form below to update your password
             </p>
 
             {message && (
-              <Alert
-                variant={
+              <div
+                className={`text-center py-2 mb-4 rounded ${
                   message === "Password changed successfully"
-                    ? "info"
-                    : "danger"
-                }
-                className="text-center"
+                    ? "bg-blue-200 text-blue-800"
+                    : "bg-red-200 text-red-800"
+                }`}
               >
                 {message}
-              </Alert>
+              </div>
             )}
 
-            <Form onSubmit={handleSubmit}>
-              <Row>
-                <Col xs={12}>
-                  <Form.Group controlId="oldPassword" className="mb-3">
-                    <Form.Label>Old Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      value={oldPassword}
-                      onChange={(e) => setOldPassword(e.target.value)}
-                      placeholder="Enter old password"
-                      required
-                      className="rounded-pill shadow-sm"
-                      style={{ borderColor: "#37B7C3" }}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
+            <form onSubmit={handleSubmit}>
+              {/* Old Password */}
+              <div className="mb-4">
+                <label
+                  htmlFor="oldPassword"
+                  className="block text-gray-700 mb-1"
+                >
+                  Old Password
+                </label>
+                <input
+                  type="password"
+                  id="oldPassword"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                  placeholder="Enter old password"
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#37B7C3]"
+                />
+              </div>
 
-              <Row>
-                <Col xs={12}>
-                  <Form.Group controlId="newPassword" className="mb-3">
-                    <Form.Label>New Password</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control
-                        type={showPassword ? "text" : "password"}
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Enter new password"
-                        required
-                        className="rounded-pill shadow-sm pr-5" // Added extra padding on the right
-                        style={{ borderColor: "#37B7C3" }}
-                      />
-                      <Button
-                        variant="link"
-                        onClick={togglePasswordVisibility}
-                        className="position-absolute end-0 top-0 mt-1 me-3 p-0" // Positioned to the right
-                        style={{ border: "none", outline: "none" }}
-                      >
-                        <FontAwesomeIcon
-                          icon={showPassword ? faEyeSlash : faEye}
-                          style={{ color: "#37B7C3", fontSize: "1.2rem" }} // Adjusted size and color
-                        />
-                      </Button>
-                    </div>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Row>
-                <Col xs={12}>
-                  <Form.Group controlId="confirmPassword" className="mb-3">
-                    <Form.Label>Confirm New Password</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control
-                        type={showPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm new password"
-                        required
-                        className="rounded-pill shadow-sm pr-5" // Added extra padding on the right
-                        style={{ borderColor: "#37B7C3" }}
-                      />
-                      <Button
-                        variant="link"
-                        onClick={togglePasswordVisibility}
-                        className="position-absolute end-0 top-0 mt-1 me-3 p-0" // Positioned to the right
-                        style={{ border: "none", outline: "none" }}
-                      >
-                        <FontAwesomeIcon
-                          icon={showPassword ? faEyeSlash : faEye}
-                          style={{ color: "#37B7C3", fontSize: "1.2rem" }} // Adjusted size and color
-                        />
-                      </Button>
-                    </div>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Row className="justify-content-center">
-                <Col xs={12} className="text-center">
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100 mt-3 rounded-pill px-4"
-                    style={{
-                      backgroundColor: "#088395",
-                      borderColor: "#088395",
-                    }}
+              {/* New Password */}
+              <div className="mb-4">
+                <label
+                  htmlFor="newPassword"
+                  className="block text-gray-700 mb-1"
+                >
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="newPassword"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    required
+                    className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-[#37B7C3]"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-0 top-0 mt-2 mr-3 p-0 focus:outline-none"
                   >
-                    Change Password
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                    <FontAwesomeIcon
+                      icon={showPassword ? faEyeSlash : faEye}
+                      style={{ color: "#37B7C3", fontSize: "1.2rem" }}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm New Password */}
+              <div className="mb-4">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-gray-700 mb-1"
+                >
+                  Confirm New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                    required
+                    className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4 pr-12 focus:outline-none focus:ring-2 focus:ring-[#37B7C3]"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-0 top-0 mt-2 mr-3 p-0 focus:outline-none"
+                  >
+                    <FontAwesomeIcon
+                      icon={showPassword ? faEyeSlash : faEye}
+                      style={{ color: "#37B7C3", fontSize: "1.2rem" }}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="text-center">
+                <button
+                  type="submit"
+                  className="w-full mt-3 rounded-full px-4 py-2 text-white bg-[#088395] border border-[#088395] focus:outline-none hover:bg-[#077a80]"
+                >
+                  Change Password
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

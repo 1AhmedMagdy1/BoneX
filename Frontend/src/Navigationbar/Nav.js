@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import avtmale from "../images/avatar-male.jpg";
-import avtfemale from "../images/avatarfm.webp";
+import avtfemale from "../images/avatarfm.png";
 import notification from "../images/notification.png";
 import "./nav.css";
 
@@ -11,6 +11,7 @@ const Nav = () => {
   const [anUser, setAnUser] = useState(false);
 
   useEffect(() => {
+    
     const data = sessionStorage.getItem("userInfo");
     if (data) {
       console.log("entered");
@@ -25,8 +26,7 @@ const Nav = () => {
     
    
     // Remove using the same key as stored ("userInfo")
-    sessionStorage.removeItem("userInfo");
-    sessionStorage.removeItem("anuser");
+    sessionStorage.clear()
     navigate("/");
     window.location.reload(true);
   };
@@ -42,7 +42,7 @@ const Nav = () => {
         <div className="user-logged">
           <span className="user-name">{user.firstName}</span>
           <img
-            src={user.gender === "1" ? avtmale : avtmale}
+            src={user.gender === 1 ?  avtmale: avtfemale }
             alt="user-pic"
           />
           <img src={notification} alt="Notification Icon" />

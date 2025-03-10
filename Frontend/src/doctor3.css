@@ -17,92 +17,10 @@
     border: 1px solid #d9d9d9;
     outline: none;
   }
-  /*progress bar*/
-  
-  .progress-bar3 {
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
-    padding: 10px 0;
-    border-bottom: 2px solid #d9d9d9;
-  }
-  .circle {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 2px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  
-    position: relative;
-  }
-  .circle img {
-    width: 80px;
-    height: 80px;
-  }
-  .line {
-    width: 300px;
-    height: 2px;
-    background-color: black;
-  }
-  .inactive {
-    opacity: 0.3;
-  }
-  .done {
-    border: 2px solid green;
-  }
-  /*progress bar*/
   
   
   
   
-  /* Info Box */
-  .info-box3 {
-      position: absolute;
-      top: 225px;
-      left: 1374px;
-      background-color: #33b6c4;
-      color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 600px;
-    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  /* Title */
-  .info-box h2 {
-      font-size: 24px;
-      font-weight: 300;
-      margin-bottom: 10px;
-      color: #ebf4f6;
-  }
-  
-  /* Horizontal Line */
-  .info-box hr {
-      border: 1px solid white;
-      margin-bottom: 15px;
-  }
-  
-  /* Info List */
-  .info-box ul {
-      list-style: none;
-      font-size: 18px;
-      line-height: 1.6;
-  }
-  
-  /* Bold Text */
-  .info-box span {
-      font-weight: bolder;
-      color: #071952;
-  }
-  
-  /* Info Box */
-
   
   /*Award*/
   .award{
@@ -157,28 +75,14 @@ color: #5E6366;
 
 
 
-button {
-    padding: 18px;
-    background-color: #33b6c4;          
-    color: #071952;
-    width: 80%;
-    border: none;
-    border-radius: 34px;
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: 700;
-    transition: background-color 0.3s, transform 0.2s;
-    margin-top: 30px;
-    margin-left: 10%;
-
-}
-form {
+ 
+.container3 form {
     display: flex;
     flex-direction: column;
     gap: 15px; 
 }
 
-button:hover {
+.form-row button:hover {
     background-color: #5BA3C6;
     transform: translateY(-2px);
 }
@@ -197,7 +101,7 @@ font-size: 20px;
 font-weight: 600;
 
 }
-input, select {
+.form-row input,.form-row select {
    width:60%;
     box-sizing: border-box;
     padding: 12px;
@@ -209,9 +113,56 @@ input, select {
     transition: border-color 0.3s;
 }
 
-input:focus, select:focus {
+.form-row input:focus, select:focus {
     border-color: #4CAF50;
     outline: none;
 }
 
   /*Form*/
+
+
+  /*location*/
+  
+  .locationdv{
+
+                
+               
+
+    display: flex  ;
+    justify-content: center;
+
+    width: 100%  ; 
+
+}
+.location-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-width: 150px;
+padding: 8px 12px;
+margin-top: 8px;
+border: 2px solid #37B7C3;
+border-radius: 4px;
+background-color: #EBF4F6;
+cursor: pointer;
+transition: background-color 0.3s ease, border-color 0.3s ease;
+font-size: 14px;
+color: #37B7C3;
+}
+
+.location-btn:hover {
+border-color: #088395;
+}
+
+.location-btn.checked {
+background-color: #088395;
+border-color: #088395;
+color: #EBF4F6;
+}
+
+.location-btn.checked:hover {
+background-color: #071952;
+border-color: #071952;
+}
+
+  /*location*/

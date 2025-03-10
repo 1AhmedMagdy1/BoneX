@@ -7,9 +7,9 @@
 
 .main-container2 {
   
-  margin: 50px auto !important;
-  width: 80% !important;
-  height: auto !important;
+  margin: 50px auto   ;
+  width: 80%   ;
+  height: auto   ;
 }
 .head {
   font-size: 32;
@@ -22,93 +22,6 @@
   border: 1px solid #d9d9d9;
   outline: none;
 }
-/*progress bar*/
-
-.progress-bar2 {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0;
-  padding: 10px 0;
-  border-bottom: 2px solid #d9d9d9;
-}
-.circle {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 2px solid black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  position: relative;
-}
-.circle img {
-  width: 80px;
-  height: 80px;
-}
-.line {
-  width: 300px;
-  height: 2px;
-  background-color: black;
-}
-.inactive {
-  opacity: 0.3;
-}
-.done {
-  border: 2px solid green;
-}
-/*progress bar*/
-
-
-
-
-  /* Info Box */
-  .info-box2 {
-    position: absolute;
-    top: 225px;
-    left: 1374px;
-    background-color: #33b6c4;
-    color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 600px;
-  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* Title */
-.info-box h2 {
-    font-size: 24px;
-    font-weight: 300;
-    margin-bottom: 10px;
-    color: #ebf4f6;
-}
-
-/* Horizontal Line */
-.info-box hr {
-    border: 1px solid white;
-    margin-bottom: 15px;
-}
-
-/* Info List */
-.info-box ul {
-    list-style: none;
-    font-size: 18px;
-    line-height: 1.6;
-}
-
-/* Bold Text */
-.info-box span {
-    font-weight: bolder;
-    color: #071952;
-}
-
-/* Info Box */
-
-
 
 
 
@@ -124,7 +37,7 @@
 
 
 
-button {
+.form-row  button {
     padding: 18px;
     background-color: #33b6c4;          
     color: #071952;
@@ -139,13 +52,13 @@ button {
     margin-left: 10%;
 
 }
-form {
+.container2 form {
     display: flex;
     flex-direction: column;
     gap: 15px; 
 }
 
-button:hover {
+.form-row button:hover {
     background-color: #5BA3C6;
     transform: translateY(-2px);
 }
@@ -176,7 +89,7 @@ font-size: 16px;
     color: #5E6366; 
 }
 
-input, select {
+.form-row  input, .form-row select {
     width: 70%;
     box-sizing: border-box;
     padding: 12px;
@@ -188,42 +101,42 @@ input, select {
     transition: border-color 0.3s;
 }
 
-input:focus, select:focus {
+.form-row input:focus,.form-row select:focus {
     border-color: #4CAF50;
     outline: none;
 }
-input[type="file"] {
-    padding: 12px !important;
-    width: 100% !important;
-    border: 1px solid #ccc !important;
+.pstd input[type="file"] {
+    padding: 12px   ;
+    width: 100%   ;
+    border: 1px solid #ccc   ;
     
-    border-radius: 5px !important;
-    background: #f7f7f7 !important;
-    font-size: 16px !important;
+    border-radius: 5px   ;
+    background: #f7f7f7   ;
+    font-size: 16px   ;
     transition: border-color 0.3s, box-shadow 0.3s;
     cursor: pointer; 
     display: block; 
 }
 
-input[type="file"]:focus {
+.pstd input[type="file"]:focus {
     border-color: #4CAF50;
     box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     outline: none;
 }
 
 
-input[type="file"]::-webkit-file-upload-button {
-    background-color: #d9d9d9 !important;
-    color: white !important; 
-    border: none !important; 
-    border-radius: 10px !important; 
-    padding: 10px !important; 
-    cursor: pointer !important; 
-    transition: background-color 0.3s !important;
+.pstd  input[type="file"]::-webkit-file-upload-button {
+    background-color: #d9d9d9   ;
+    color: white   ; 
+    border: none   ; 
+    border-radius: 10px   ; 
+    padding: 10px   ; 
+    cursor: pointer   ; 
+    transition: background-color 0.3s   ;
 }
 
-input[type="file"]::-webkit-file-upload-button:hover {
-    background-color: #5BA3C6 !important; 
+.pstd  input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #5BA3C6   ; 
 }
 
 

@@ -3,10 +3,13 @@ import personalImg from "./images/personal.webp";
 import { useNavigate } from "react-router-dom";
 import graduateImg from "./images/graduate.webp";
 import professionalImg from "./images/professional.png";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 import "./RegisterDoctor1.css";
 
 const RegisterDoctor1 = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   // State for fetched country codes
   const [countryCodes, setCountryCodes] = useState([]);
   const [selectedCountryCode, setSelectedCountryCode] = useState("");
@@ -48,6 +51,7 @@ const RegisterDoctor1 = () => {
   }, []);
 
   // States for form fields
+  const [selectedDate, setSelectedDate] = useState(null);
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
   const [gender, setGender] = useState(""); // "female" or "male"
@@ -55,77 +59,126 @@ const RegisterDoctor1 = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [userpic, setUserpic] = useState(null);
 
   // State for validation errors
   const [errors, setErrors] = useState({});
 
+  // IndexedDB helper: Open or create the DB and object store
+  const openDB = () => {
+    return new Promise((resolve, reject) => {
+      const request = window.indexedDB.open("DoctorFilesDB", 1);
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains("files")) {
+          db.createObjectStore("files", { keyPath: "id", autoIncrement: true });
+        }
+      };
+      request.onsuccess = (event) => {
+        resolve(event.target.result);
+      };
+      request.onerror = (event) => {
+        reject(event.target.error);
+      };
+    });
+  };
+
+  // IndexedDB helper: Store a file in the "files" object store
+  const storeFileInDB = async (file, fileCategory) => {
+    try {
+      const db = await openDB();
+      const transaction = db.transaction("files", "readwrite");
+      const store = transaction.objectStore("files");
+
+      const record = {
+        fileCategory, // e.g., "userpic"
+        name: file.name,
+        fileData: file, // The file object (Blob) is stored directly
+        timestamp: new Date(),
+      };
+
+      store.add(record);
+
+      return new Promise((resolve, reject) => {
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+      });
+    } catch (error) {
+      console.error("Error storing file in IndexedDB", error);
+    }
+  };
+
+  // Handler for file change
+  const handleUserpicFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUserpic(file);
+    }
+  };
+
   // Handler for form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
 
     if (!name.trim()) {
       newErrors.name = "Name is required";
     }
-
     if (!dob) {
       newErrors.dob = "Date of Birth is required";
     }
-
     if (!gender) {
       newErrors.gender = "Please select a gender";
     }
-
+    if (!userpic) {
+      newErrors.userpic = "Doctor image is required";
+    } else if (userpic.size > 5242880) {
+      newErrors.userpic = "Doctor image must be less than 5MB";
+    }
     if (!selectedCountryCode) {
       newErrors.countryCode = "Country code is required";
     }
-
     if (!mobile.trim()) {
       newErrors.mobile = "Mobile number is required";
     }
-
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "A valid email is required";
     }
-
     if (!password) {
       newErrors.password = "Password is required";
     } else if (password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
     }
-
     if (confirmPassword !== password) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      return;
     } else {
-      // Clear errors and process form submission
       setErrors({});
-      console.log("Form submitted successfully!");
-
-      // Store the data in session storage
-      const doctorData = {
-        name,
-        dob,
-        gender,
-        countryCode: selectedCountryCode,
-        mobile,
-        email,
-        password,
-      };
-      sessionStorage.setItem("doctorData", JSON.stringify(doctorData));
-      navigate("/Doctor2")
-      // Optionally reset the form fields
-      // setName("");
-      // setDob("");
-      // setGender("");
-      // setMobile("");
-      // setEmail("");
-      // setPassword("");
-      // setConfirmPassword("");
     }
+
+    // Store userpic file in IndexedDB
+    await storeFileInDB(userpic, "userpic");
+
+    console.log("Form submitted successfully!");
+
+    // Store the data in session storage.
+    // Here, only the file name is stored; the actual file is in IndexedDB.
+    const doctorData = {
+      name,
+      dob,
+      userpic: userpic.name,
+      gender,
+      countryCode: selectedCountryCode,
+      mobile,
+      email,
+      password,
+    };
+    sessionStorage.setItem("doctorData", JSON.stringify(doctorData));
+    navigate("/Doctor2");
   };
 
   return (
@@ -133,7 +186,7 @@ const RegisterDoctor1 = () => {
       <h1 className="head">Personal Details</h1>
       <div className="div-line"></div>
 
-      <div className="progress-bar1">
+      <div className="progress-bar1 animate__animated animate__slideInLeft">
         <div className="circle">
           <img src={personalImg} alt="Personal Info" />
         </div>
@@ -147,7 +200,7 @@ const RegisterDoctor1 = () => {
         </div>
       </div>
 
-      <div className="info-box1">
+      <div className="info-box1 animate__animated animate__slideInRight">
         <h2>Why Bonex?</h2>
         <hr />
         <ul>
@@ -169,7 +222,7 @@ const RegisterDoctor1 = () => {
         </ul>
       </div>
 
-      <div className="container1">
+      <div className="container1 animate__animated animate__backInUp">
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <label htmlFor="name">
@@ -255,6 +308,18 @@ const RegisterDoctor1 = () => {
               />
               {errors.mobile && <span className="error">{errors.mobile}</span>}
             </div>
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="userpic">Picture</label>
+            <input
+              type="file"
+              id="userpic"
+              onChange={handleUserpicFileChange}
+            />
+            {errors.userpic && (
+              <span className="error">{errors.userpic}</span>
+            )}
           </div>
 
           <div className="form-row">

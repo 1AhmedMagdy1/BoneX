@@ -8,429 +8,430 @@
     */
 body{
 
-background-color:#EBF4F6 !important;
-background-image: none !important;
+background-color:#EBF4F6 !important ;
+background-image: none  ;
 
 }
     :root {
-      --bg-color: #EBF4F6 !important ;
-      --accent-color: #37B7C3 !important ;
-      --accent-color-light: #4ecad8 !important ; /* Lighter variant if needed */
-      --secondary-accent: #088395 !important ;
-      --dark-color: #071952 !important ;
-      --text-color: #333 !important ;
+      --bg-color: #EBF4F6   ;
+      --accent-color: #37B7C3   ;
+      --accent-color-light: #4ecad8   ; /* Lighter variant if needed */
+      --secondary-accent: #088395   ;
+      --dark-color: #071952   ;
+      --text-color: #333   ;
     }
 
 
 
     /* MAIN WRAPPER */
     .homebody {
-        width: 90% !important ;
+        width: 90%   ;
         margin: auto;
-        background-color: #fff !important ;
-        border-radius: 20px !important ;
-        padding: 20px !important ;
+        height: auto;
+        background-color: #fff   ;
+        border-radius: 20px   ;
+        padding: 20px   ;
        
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1) !important ;
-        margin-top: 4vh !important ;
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1)   ;
+        margin-top: 4vh   ;
     }
 
     /* DOCTOR CARD */
-    .doctor-card {
+    .doctorh-card {
       
-      width: 95% !important ;
-      height: 350px !important ;
+      width: 95%   ;
+      height: 350px    ;
       margin: auto;
-      position: relative !important ;
-      border-radius: 15px !important ;
-      padding: 20px 30px !important ;
-      display: flex !important ;
-      align-items: center !important ;
-      overflow: hidden !important ;
-      transition: transform 0.5s ease, box-shadow 0.5s ease !important ;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1) !important ;
-      margin-bottom: 2rem !important ;
+      position: relative    ;
+      border-radius: 15px    ;
+      padding: 20px 30px    ;
+      display: flex    ;
+      align-items: center    ;
+      overflow: hidden    ;
+      transition: transform 0.5s ease, box-shadow 0.5s ease    ;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1)    ;
+      margin-bottom: 2rem    ;
     }
-    .doctor-card:hover {
-      transform: translateY(-8px) scale(1.03) !important ;
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2) !important ;
+    .doctorh-card:hover {
+      transform: translateY(-8px) scale(1.03)    ;
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2)    ;
     }
     /* Decorative circles using pseudo-elements */
-    .doctor-card::before,
-    .doctor-card::after {
-      content: "" !important ;
-      position: absolute !important ;
-      border-radius: 50% !important ;
-      background: rgba(255, 255, 255, 0.15) !important ;
-      z-index: 1 !important ;
-      transition: transform 0.5s ease !important ;
+    .doctorh-card::before,
+    .doctorh-card::after {
+      content: ""    ;
+      position: absolute    ;
+      border-radius: 50%    ;
+      background: rgba(255, 255, 255, 0.15)    ;
+      z-index: 1   ;
+      transition: transform 0.5s ease    ;
     }
-    .doctor-card::before {
-      width: 200px !important ;
-      height: 200px !important ;
-      top: -50px !important ;
-      right: -50px !important ;
+    .doctorh-card::before {
+      width: 200px    ;
+      height: 200px    ;
+      top: -50px    ;
+      right: -50px    ;
     }
-    .doctor-card::after {
-      width: 150px !important ;
-      height: 150px !important ;
-      bottom: -30px !important ;
-      left: 20% !important ;
+    .doctorh-card::after {
+      width: 150px    ;
+      height: 150px    ;
+      bottom: -30px    ;
+      left: 20%    ;
     }
-    .doctor-card:hover::before {
-      transform: scale(1.1) translate(-10px, 10px) !important ;
+    .doctorh-card:hover::before {
+      transform: scale(1.1) translate(-10px, 10px)    ;
     }
-    .doctor-card:hover::after {
-      transform: scale(1.1) translate(10px, -10px) !important ;
+    .doctorh-card:hover::after {
+      transform: scale(1.1) translate(10px, -10px)    ;
     }
     /* Male Card: Use secondary accent -> accent gradient */
-    .doctor-card.male {
-      background: linear-gradient(135deg, #088395, #37B7C3) !important ;
+    .doctorh-card.male {
+      background: linear-gradient(135deg, #088395, #37B7C3)    ;
     }
-    /* Female Card: example if needed !important ; not used in this snippet */
-    .doctor-card.female {
-      background: linear-gradient(135deg, #8a4db9, #5e3ea5) !important ;
+    /* Female Card: example if needed   ; not used in this snippet */
+    .doctorh-card.female {
+      background: linear-gradient(135deg, #8a4db9, #5e3ea5)    ;
     }
     /* Info/Text Section */
     .docinfo {
-      position: relative !important ;
-      z-index: 2 !important ;
-      width: 50% !important ;
-      color: #fff !important ;
-      padding-right: 10px !important ;
+      position: relative    ;
+      z-index: 2    ;
+      width: 50%    ;
+      color: #fff    ;
+      padding-right: 10px    ;
     }
     .docinfo .greeting {
-      font-size: 16px !important ;
-      color: #ddd !important ;
-      margin-bottom: 10px !important ;
+      font-size: 16px    ;
+      color: #ddd    ;
+      margin-bottom: 10px    ;
     }
     .docinfo .DoctorName {
-      font-size: 28px !important ;
-      font-weight: 700 !important ;
-      margin-bottom: 5px !important ;
+      font-size: 28px    ;
+      font-weight: 700    ;
+      margin-bottom: 5px    ;
     }
     .docinfo .specialities {
-      font-size: 16px !important ;
-      font-weight: 500 !important ;
-      margin-bottom: 20px !important ;
-      color: #f5f5f5 !important ;
+      font-size: 16px    ;
+      font-weight: 500    ;
+      margin-bottom: 20px    ;
+      color: #f5f5f5    ;
     }
     .docinfo .todaysApp {
-      font-size: 18px !important ;
-      font-weight: 600 !important ;
+      font-size: 18px    ;
+      font-weight: 600    ;
     }
     .docinfo .todaysApp span {
-      color: #ffeb3b !important ;
+      color: #ffeb3b    ;
     }
     /* Doctor Avatar/Image */
-    .doctor-card img {
-      position: relative !important ;
-      z-index: 2 !important ;
-      top: 35% !important ;
-      width: 350px !important ;
-      height: auto !important ;
-      object-fit: contain !important ;
-      transition: transform 0.5s ease !important ;
+    .doctorh-card img {
+      position: relative    ;
+      z-index: 2    ;
+      top: 35%    ;
+      width: 350px    ;
+      height: auto    ;
+      object-fit: contain    ;
+      transition: transform 0.5s ease    ;
     }
-    .doctor-card:hover img {
-      transform: rotate(3deg) scale(1.02) !important ;
+    .doctorh-card:hover img {
+      transform: rotate(3deg) scale(1.02)    ;
     }
     /* Responsive: Stack vertically on smaller screens */
     @media (max-width: 768px) {
-      .doctor-card {
-        flex-direction: column !important ;
-        width: 100% !important ;
-        height: auto !important ;
+      .doctorh-card {
+        flex-direction: column   ;
+        width: 100%   ;
+        height: auto   ;
       }
       .info,
-      .doctor-card img {
-        width: 100% !important ;
-        text-align: center !important ;
+      .doctorh-card img {
+        width: 100%    ;
+        text-align: center    ;
       }
-      .doctor-card img {
-        margin-top: 20px !important ;
-        top: 0 !important ;
+      .doctorh-card img {
+        margin-top: 20px    ;
+        top: 0    ;
       }
     }
 
     /* STATISTICS CARDS */
-    .cards-container {
-      margin-left: 21vh !important ;
-        flex-direction: col !important;
-      display: flex !important ;
-      gap: 20px !important ;
-      width: 60% !important ;
-      flex-wrap: wrap !important ;
-      justify-content: center !important ;
-      margin-bottom: 2rem !important ;
+   .homebody .cards-container {
+      margin-left: -50px ;
+        flex-direction: row   ;
+      display: flex    ;
+     
+      width: 100%    ;
+      flex-wrap: wrap    ;
+      justify-content: space-between    ;
+      margin-bottom: 2rem    ;
     }
-    .cards-container .r1,.cards-container .r2{
-        display: flex !important;
-        gap: 25px !important;
-        margin-left: 50px !important;
+      .homebody .cards-container .r1, .homebody  .cards-container .r2{
+        display: flex   ;
+        gap: 25px   ;
+        margin-left: 50px   ;
     }
     
-    .card {
-      width: 200px !important ;
-      padding: 20px !important ;
-      border-radius: 10px !important ;
-      color: #fff !important ;
-      text-align: center !important ;
-      display: flex !important ;
-      gap: 10px !important ;
-      transition: transform 0.3s ease, box-shadow 0.3s ease !important ;
-      align-items: center !important ;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important ;
-      margin-bottom: 1rem !important ;
+     .homebody  .cardh {
+      width: 200px    ;
+      padding: 20px    ;
+      border-radius: 10px    ;
+      color: #fff    ;
+      text-align: center    ;
+      display: flex   ;
+      gap: 10px   ;
+      transition: transform 0.3s ease, box-shadow 0.3s ease    ;
+      align-items: center    ;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1)    ;
+      margin-bottom: 1rem    ;
     }
-    .card:hover {
-      transform: translateY(-8px) scale(1.02) !important ;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important ;
+     .homebody .cardh:hover {
+      transform: translateY(-8px) scale(1.02)    ;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2)    ;
     }
-    .icon-container {
-      width: 50px !important ;
-      height: 50px !important ;
-      display: flex !important ;
-      justify-content: center !important ;
-      align-items: center !important ;
-      border-radius: 50% !important ;
-      background: rgba(255, 255, 255, 0.2) !important ;
-      margin-bottom: 10px !important ;
+      .homebody .icon-container {
+      width: 50px    ;
+      height: 50px    ;
+      display: flex    ;
+      justify-content: center    ;
+      align-items: center    ;
+      border-radius: 50%    ;
+      background: rgba(255, 255, 255, 0.2)    ;
+      margin-bottom: 10px   ;
     }
-    .icon-container .material-icons {
-      font-size: 24px !important ;
-      color: white !important ;
+    .homebody .icon-container .material-icons {
+      font-size: 24px    ;
+      color: white    ;
     }
     /* Re-map your color-coded cards to your palette (optional) */
     /* New Color-coded Styles */
-    .indigo {
-      background: #3f51b5 !important ;
+    .homebody .indigo {
+      background: #3f51b5    ;
     }
 
-    .cyan {
-      background: #00bcd4 !important ;
+    .homebody .cyan {
+      background: #00bcd4    ;
     }
-    .purple {
-      background: #088395 !important ;
+     .homebody .purple {
+      background: #088395    ;
     }
-    .red {
-      background: #ff6b6b !important ;
+     .homebody .red {
+      background: #ff6b6b    ;
     }
-    .orange {
-      background: #ffa502 !important ;
+    .homebody .orange {
+      background: #ffa502    ;
     }
-    .blue {
-      background: #37B7C3 !important ;
+    .homebody .blue {
+      background: #37B7C3    ;
     }
-    .green {
-      background: #2ecc71 !important ;
+    .homebody .green {
+      background: #2ecc71    ;
     }
-    .teal {
-      background: #1abc9c !important ;
+    .homebody .teal {
+      background: #1abc9c    ;
     }
 
     /* SCHEDULE SECTION */
     .schedule-section {
-      margin-top: 25px !important ;
-      width: 100% !important ;
-      min-height: 200px !important ;
-      background-color: #fff !important ;
-      border-radius: 8px !important ;
-      padding: 1rem !important ;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important ;
-      overflow: hidden !important ;
+      margin-top: 25px   ;
+      width: 100%   ;
+      height: auto;
+      background-color: #fff   ;
+      border-radius: 8px   ;
+      padding: 1rem   ;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1)   ;
     }
 
     /* SEARCH & FILTER WRAPPER */
     .search-filter-wrapper {
-      display: flex !important ;
-      align-items: center !important ;
-      justify-content: end !important ;
-      gap: 1rem !important ;
-      padding: 1rem !important ;
-      max-width: 600px !important ;
-      margin-left: auto !important ;
-      margin-right: 2rem !important ; /* some right margin to keep it away from table */
+      display: flex   ;
+      align-items: center   ;
+      justify-content: end   ;
+      gap: 1rem   ;
+      padding: 1rem   ;
+      max-width: 600px   ;
+      margin-left: auto   ;
+      margin-right: 2rem   ; /* some right margin to keep it away from table */
     }
     /* Search Bar Container */
     .search-bar {
-      position: relative !important ;
-      display: flex !important ;
-      align-items: center !important ;
-      flex: 1 !important ;
+      position: relative   ;
+      display: flex   ;
+      align-items: center   ;
+      flex: 1   ;
     }
     /* Icon inside the Search Bar */
     .search-icon {
-      position: absolute !important ;
-      left: 10px !important ;
-      color: #999 !important ;
-      pointer-events: none !important ;
-      transition: color 0.3s ease !important ;
+      position: absolute   ;
+      left: 10px   ;
+      color: #999   ;
+      pointer-events: none   ;
+      transition: color 0.3s ease   ;
     }
     /* Search Input */
     .search-bar input {
-      width: 100% !important ;
-      padding: 10px 10px 10px 36px !important ;
-      border: 1px solid #ccc !important ;
-      border-radius: 20px !important ;
-      outline: none !important ;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease !important ;
+      width: 100%   ;
+      padding: 10px 10px 10px 36px   ;
+      border: 1px solid #ccc   ;
+      border-radius: 20px   ;
+      outline: none   ;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease   ;
     }
     .search-bar input:focus {
-      border-color: #37B7C3 !important ;
-      box-shadow: 0 0 5px rgba(55, 183, 195, 0.3) !important ;
+      border-color: #37B7C3   ;
+      box-shadow: 0 0 5px rgba(55, 183, 195, 0.3)   ;
     }
     .search-bar:hover .search-icon {
-      color: #666 !important ;
+      color: #666   ;
     }
 
     /* Filter Dropdown */
     .filter-dropdown {
-      display: inline-flex !important ;
-      align-items: center !important ;
-      gap: 8px !important ;
+      display: inline-flex   ;
+      align-items: center   ;
+      gap: 8px   ;
     }
     .filter-label {
-      font-weight: 500 !important ;
-      font-size: 1rem !important ;
-      color: #333 !important ;
+      font-weight: 500   ;
+      font-size: 1rem   ;
+      color: #333   ;
     }
     .filter-dropdown select {
-      padding: 10px 15px !important ;
-      border: 1px solid #ccc !important ;
-      border-radius: 20px !important ;
-      background-color: #fff !important ;
-      outline: none !important ;
-      cursor: pointer !important ;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease !important ;
+      padding: 10px 15px   ;
+      border: 1px solid #ccc   ;
+      border-radius: 20px   ;
+      background-color: #fff   ;
+      outline: none   ;
+      cursor: pointer   ;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease   ;
     }
     .filter-dropdown select:hover,
     .filter-dropdown select:focus {
-      border-color: #37B7C3 !important ;
-      box-shadow: 0 0 5px rgba(55, 183, 195, 0.3) !important ;
+      border-color: #37B7C3   ;
+      box-shadow: 0 0 5px rgba(55, 183, 195, 0.3)   ;
     }
 
     /* APPOINTMENT TABLE */
     .appointment-table {
-      width: 100% !important ;
-      border-collapse: collapse !important ;
-      background: #fff !important ;
-      border-radius: 8px !important ;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important ;
-      margin-top: 1rem !important ;
-      overflow: hidden !important;
+      width: 100%   ;
+      border-collapse: collapse   ;
+      background: #fff   ;
+      border-radius: 8px   ;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)   ;
+      margin-top: 1rem   ;
+      
     }
     .appointment-table thead {
-      background: #071952 !important ;
-      color: #fff !important ;
+      background: #071952   ;
+      color: #fff   ;
     }
     .appointment-table th,
     .appointment-table td {
-      padding: 12px 15px !important ;
-      text-align: left !important ;
-      border-bottom: 1px solid #ddd !important ;
-      position: relative !important ;
+      padding: 12px 15px   ;
+      text-align: left   ;
+      border-bottom: 1px solid #ddd   ;
+      position: relative   ;
     }
     .appointment-table tbody tr:hover {
-      background: #f9f9f9 !important ;
+      background: #f9f9f9   ;
     }
 
     /* Patient Info */
     .patient-info {
-      display: flex !important ;
-      align-items: center !important ;
+      display: flex   ;
+      align-items: center   ;
     }
     .patient-info img {
-      width: 40px !important ;
-      height: 40px !important ;
-      border-radius: 50% !important ;
-      margin-right: 10px !important ;
-      object-fit: cover !important ;
-      border: 2px solid #37B7C3 !important ;
+      width: 40px   ;
+      height: 40px   ;
+      border-radius: 50%   ;
+      margin-right: 10px   ;
+      object-fit: cover   ;
+      border: 2px solid #37B7C3   ;
     }
 
     /* Status Badges */
     .status {
-      padding: 4px 8px !important ;
-      border-radius: 4px !important ;
-      font-size: 0.9em !important ;
-      font-weight: bold !important ;
-      display: inline-block !important ;
-      color: #fff !important ;
+      padding: 4px 8px   ;
+      border-radius: 4px   ;
+      font-size: 0.9em   ;
+      font-weight: bold   ;
+      display: inline-block   ;
+      color: #fff   ;
     }
     .status-booked {
-      background: #28a745 !important ; /* Green */
+      background: #28a745   ; /* Green */
     }
     .status-completed {
-      background: #0d6efd !important ; /* Blue */
+      background: #0d6efd   ; /* Blue */
     }
     .status-canceled {
-      background: #dc3545 !important ; /* Red */
+      background: #dc3545   ; /* Red */
     }
     .status-noshow {
-      background: #ffc107 !important ; /* Yellow */
-      color: #333 !important ;
-      font-weight: 600 !important ;
+      background: #ffc107   ; /* Yellow */
+      color: #333   ;
+      font-weight: 600   ;
     }
 
     /* Dropdown for table actions */
     .dropdown {
-      position: relative !important ;
-      display: inline-block !important ;
+      position: relative   ;
+      display: inline-block   ;
     }
     .dropdown-toggle {
-      cursor: pointer !important ;
-      font-size: 1.2em !important ;
-      color: #37b7c3 !important ;
-      transition: color 0.3s ease !important ;
+      cursor: pointer   ;
+      font-size: 1.2em   ;
+      color: #37b7c3   ;
+      transition: color 0.3s ease   ;
     }
     .dropdown-toggle:hover {
-      color: #088395 !important ;
+      color: #088395   ;
     }
     .dropdown-menu {
-      display: none !important ;
-      position: absolute !important ;
-      right: 0 !important ;
-      background: #fff !important ;
-      border: 1px solid #ddd !important ;
-      border-radius: 4px !important ;
-      min-width: 160px !important ;
-      z-index: 100 !important ;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important ;
-      padding: 5px 0 !important ;
+      display: none   ;
+      position: absolute   ;
+      right: 0   ;
+      background: #fff   ;
+      border: 1px solid #ddd   ;
+      border-radius: 4px   ;
+      min-width: 160px   ;
+      z-index: 100   ;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)   ;
+      padding: 5px 0   ;
     }
     .dropdown-menu.show {
-      display: block !important ;
+      display: block   ;
     }
     .dropdown-item {
-      display: flex !important ;
-      align-items: center !important ;
-      padding: 8px 15px !important ;
-      font-size: 0.9em !important ;
-      color: #333 !important ;
-      text-decoration: none !important ;
-      transition: background 0.2s !important ;
+      display: flex   ;
+      align-items: center   ;
+      justify-content: space-between;
+      padding: 8px 15px   ;
+      font-size: 0.9em   ;
+      color: #333   ;
+      text-decoration: none   ;
+      transition: background 0.2s   ;
     }
     .dropdown-item:hover {
-      background: #f1f1f1 !important ;
+      background: #f1f1f1   ;
     }
     .dropdown-item i {
-      margin-right: 8px !important ;
-      font-size: 1em !important ;
+      margin-right: 8px   ;
+      font-size: 1em   ;
     }
 
     /* Row Animation */
     @keyframes fadeInUp {
       from {
-        opacity: 0 !important ;
-        transform: translateY(20px) !important ;
+        opacity: 0   ;
+        transform: translateY(20px)   ;
       }
       to {
-        opacity: 1 !important ;
-        transform: translateY(0) !important ;
+        opacity: 1   ;
+        transform: translateY(0)   ;
       }
     }
     .appointment-table tbody tr {
-      animation: fadeInUp 0.5s ease-in !important ;
+      animation: fadeInUp 0.5s ease-in   ;
     }
   

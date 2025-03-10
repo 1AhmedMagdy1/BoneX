@@ -1,186 +1,320 @@
 
         
-        .signup-btn {
-    display: inline-block !important ; 
-    padding: 15px 30px !important ; 
-    background-color: #088395 !important ; 
-    color: #071952 !important ;
-    text-decoration: none !important ;
-    font-family: 'Times New Roman', Times, serif !important ;
-    font-size: 1.2rem !important ; 
-    font-weight: bold !important ;
-    border-radius: 5px !important ; 
-    width: 200px !important ; 
-    text-align: center !important ; 
-    border-radius: 27px !important ;
+      .main-container  .signup-btn {
+    display: inline-block  ; 
+    padding: 15px 30px  ; 
+    background-color: #088395  ; 
+    color: #071952  ;
+    text-decoration: none  ;
+    font-family: 'Times New Roman', Times, serif  ;
+    font-size: 1.2rem  ; 
+    font-weight: bold  ;
+    border-radius: 5px   ; 
+    width: 200px   ; 
+    text-align: center   ; 
+    border-radius: 27px   ;
 }
 .signup-btn:hover{
-    font-size: 1.5rem !important ; 
-    background-color: #0F9DA9 !important ;
-    transition: .3s !important ;
+    font-size: 1.5rem   ; 
+    background-color: #0F9DA9   ;
+    transition: .3s   ;
 
 }
 .signup-btn i {
-    font-size: 1.5rem !important ; /* تكبير السهم */
-    vertical-align: middle !important ; /* ضبط محاذاة السهم */
+    font-size: 1.5rem   ; /* تكبير السهم */
+    vertical-align: middle   ; /* ضبط محاذاة السهم */
 }
 
        
         .main-container {
-            width: 1500px !important ;
-            height: 700px !important ;
-            margin: 100px auto !important ;
-            padding: 30px !important ;
-            background-color: white !important ;
-            border-radius: 10px !important ;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important ;
-            display: flex !important ; 
-            justify-content: space-evenly !important ; 
-            gap: 40px !important ;
-            position: relative !important ;
+            width: 1500px   ;
+            height: auto   ;
+            margin: 100px auto   ;
+            padding: 30px   ;
+            background-color: white   ;
+            border-radius: 10px   ;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)   ;
+            display: flex   ; 
+            justify-content: space-evenly   ; 
+            gap: 40px   ;
+            position: relative   ;
         }
         .logo{
-width: 150px !important ;
-height: 150px !important ;
-border-radius: 50% !important ;
-position: absolute !important ;
-top: -11% !important ;
-left: 42% !important ;
-z-index: 10000 !important ;
+width: 150px   ;
+height: 150px   ;
+border-radius: 50%   ;
+position: absolute   ;
+top: -11%   ;
+left: 42%   ;
+z-index: 10000   ;
         }
         .form-container { 
-            flex: 2 !important ;
-            display: flex !important ;
-            flex-direction: column !important ;
-            align-items: self-start !important ;
+            flex: 2   ;
+            display: flex   ;
+            flex-direction: column   ;
+            align-items: self-start   ;
+            width: auto;
            
         }
        
         .info {
-            flex: 2 !important ; 
-            height: 400px !important ;
-            display: flex !important ;
-            flex-direction: column !important ;
-            justify-content: center !important ;
-            gap: 20px !important ;
-            font-size: 24px !important ;
+            flex: 2   ; 
+            height: 400px   ;
+            display: flex   ;
+            flex-direction: column   ;
+            justify-content: center   ;
+            gap: 20px   ;
+            font-size: 24px   ;
         }
         .info .info-section {
-            background-color: #37B7C3 !important ;
-            color: white !important ;
-            padding: 20px !important ;
-            border-radius: 10px !important ;
-            text-align: center !important ;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important ;
+            background-color: #37B7C3   ;
+            color: white   ;
+            padding: 20px   ;
+            border-radius: 10px   ;
+            text-align: center   ;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)   ;
         }
-        .form-group {
-            margin-top: 50px !important ;
-            margin-bottom: 15px !important ;
+     .main-container  .form-group {
+            margin-top: 50px   ;
+            margin-bottom: 15px   ;
             
-            display: flex !important ;
-            gap: 60px !important ;
-            width: 100% !important ; 
+            display: flex   ;
+            gap: 60px   ;
+            width: 100%   ; 
         }
-        .form-group input {
+        .main-container   .form-group input {
             
-            padding: 15px !important ;
-            border: 1px solid #ccc !important ;
-            border-radius: 15px !important ;
-            font-size: 16px !important ;
-            width: 100% !important ;
-            overflow: hidden !important ;
+            padding: 15px  ;
+            border: 1px solid #ccc  ;
+            border-radius: 15px  !important;
+            font-size: 16px  ;
+            width: 100%  ;
+            
         }
-.input-group{width: 100% !important ;}
+   .main-container  .input-group{width: 100%  ;}
 
-        .input-group span{
+       .main-container .input-group span{
        
-    position: relative !important ;
-    color: #5E6366 !important ;
-            font-size: 16px !important ;
-        top: 50% !important ;
-        left: 4% !important ;
-        transition: .25s !important ;
+    position: relative   ;
+    color: #5E6366   ;
+            font-size: 16px   ;
+        top: 50%   ;
+        left: 4%   ;
+        transition: .25s   ;
     }
 
-    .input-group span{
-        position: relative !important ;
-        color: #5E6366 !important ;
-        background-color: red !important ;
-            font-size: 14px !important ;
-        top: 0.5vh !important ;
-        left: 2vh !important ;
-    background-color: white !important ; 
+   .main-container .input-group span{
+        position: relative   ;
+        color: #5E6366   ;
+        background-color: red   ;
+            font-size: 14px   ;
+        top: 0.5vh   ;
+        left: 2vh   ;
+    background-color: white   ; 
     }
 
 
         .captcha { 
-            margin-left: 239px !important ;
-            width: 350px !important ; 
-            height: 50px !important ;
-            margin-top: 15px !important ; 
-            padding-top: 13px !important ; 
-            background-color: whitesmoke !important ;
+            margin-left: 239px   ;
+            width: 350px   ; 
+            height: 50px   ;
+            margin-top: 15px   ; 
+            padding-top: 13px   ; 
+            background-color: whitesmoke   ;
         }
-        .signup {
-            margin-top: 20px !important ;
+       .main-container .signup {
+            margin-top: 20px  ;
         }
-        .signup button {
-            background-color: #002366 !important ;
-            color: white !important ;
-            padding: 12px 108px !important ;
-            border: none !important ;
-            margin-left: 181px !important ;
-            border-radius: 15px !important ;
-            cursor: pointer !important ;
-            font-size: 18px !important ;
-            transition: 0.3s !important ;
+         .main-container  .signup button {
+            background-color: #002366  ;
+            color: white  ;
+            padding: 12px 108px  ;
+            border: none  ;
+            margin-left: 181px  ;
+            border-radius: 15px  ;
+            cursor: pointer  ;
+            font-size: 18px  ;
+            transition: 0.3s  ;
         }
-        .signup button:hover {
-            background-color: #0056b3 !important ;
-        }
-        .social-login {
-            text-align: center !important ;
-            margin-top: 57px !important ; 
-            margin-left: 268px !important ;
-
-        }
-        .social-login p {
-            font-size: 20px !important ;
-            margin-bottom: 10px !important ;
+          .main-container  .signup button:hover {
+            background-color: #0056b3  ;
         }
         .social-login {
-            display: flex !important ;
-            justify-content: center !important ;
-            gap: 30px !important ;
-
+            text-align: center  ;
+            margin-top: 57px  ; 
+            margin-left: 268px  ;
+            display: flex   ;
+            justify-content: center   ;
+            gap: 30px   ;
         }
-        .social-login i:hover{
-transform: scale(1.5) !important ;
-background-color: #EBF4F6 !important ;
-border-radius: 50% !important ;
+        .main-container .social-login p {
+            font-size: 20px  ;
+            margin-bottom: 10px  ;
+        }
+        
+         .main-container .social-login i:hover{
+transform: scale(1.5)  ;
+background-color: #EBF4F6  ;
+border-radius: 50%  ;
         }
       
-        .divider {
-            width: 180px !important ;
-            height: 2px !important ;
-            background-color: #ccc !important ;
-            margin: 10px auto !important ;
+       .main-container .divider {
+            width: 180px  ;
+            height: 2px  ;
+            background-color: #ccc  ;
+            margin: 10px auto  ;
         }
-        .line {
-            width: 100% !important ;
-            border-top: 2px solid black !important ;
-            position: relative !important ; 
-            top: 30px !important ;
+       .main-container .line {
+            width: 100%  ;
+            border-top: 2px solid black  ;
+            position: relative  ; 
+            top: 30px  ;
        
         
         
         }
         .or {
-            position: absolute !important ;
-            top: -10px !important ;
-            left: 50% !important ;
-            transform: translateX(-50%) !important ;
-            background: white !important ;
-            padding: 0 10px !important ;
+            position: absolute  ;
+            top: -10px  ;
+            left: 50%  ;
+            transform: translateX(-50%)  ;
+            background: white  ;
+            padding: 0 10px  ;
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        .toggle-container {
+            /* Switch to flex and define a width */
+            display: flex;
+            width: 100%; /* or any width you prefer */
+            
+            /* Outer border to visually enclose both options */
+            border: 2px solid #37B7C3;
+            border-radius: 4px;
+            
+            /* Ensures corners are rounded for the entire toggle */
+            overflow: hidden;
+          }
+          
+          /* Hide the default radio buttons */
+          .toggle-container input[type="radio"] {
+            display: none;
+          }
+          
+          /* Toggle labels */
+          .toggle-btn {
+            /* Use flex:1 so each label expands equally */
+            flex: 1;
+            text-align: center;
+            
+            /* Spacing and appearance */
+            padding: 10px 0;
+            margin: 0;
+            cursor: pointer;
+            font-size: 16px;
+            
+            /* Default text color matches the border color */
+            color: #37B7C3;
+            background-color: #fff;
+            
+            /* Smooth transition on hover/check */
+            transition: background-color 0.3s, color 0.3s;
+          }
+          
+          /* Optional dividing line for the second label */
+          .toggle-btn:not(:first-of-type) {
+            border-left: 1px solid #37B7C3;
+          }
+          
+          /* When a radio button is checked, style its corresponding label */
+          .main-container #male:checked + label[for="male"],
+           .main-container #female:checked + label[for="female"] {
+            background-color: #37B7C3;
+            color: #fff;
+          }
+          
+          /* Optional hover effect on each label */
+          .toggle-btn:hover {
+            background-color: #088395;
+            color: #fff;
+          }
+          
+
+          .error {
+            color: red  ;
+          }
+          
+          .error:before {
+            content: "* ";
+          }
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            .locationdv{
+
+                
+               
+                
+                display: flex  ;
+                justify-content: center;
+           
+                width: 100%  ; 
+
+            }
+          .location-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            border: 2px solid #37B7C3;
+            border-radius: 4px;
+            background-color: #EBF4F6;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            font-size: 14px;
+            color: #37B7C3;
+          }
+          
+          .location-btn:hover {
+            border-color: #088395;
+          }
+          
+          .location-btn.checked {
+            background-color: #088395;
+            border-color: #088395;
+            color: #EBF4F6;
+          }
+          
+          .location-btn.checked:hover {
+            background-color: #071952;
+            border-color: #071952;
+          }
+            

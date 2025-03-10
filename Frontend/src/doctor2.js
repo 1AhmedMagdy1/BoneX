@@ -6,19 +6,18 @@ import professionalImg from "./images/professional.png";
 import "./doctor2.css";
 
 const AcademicDetails = () => {
-  // Form field states
   const navigate = useNavigate();
+
+  // Form field states
   const [university, setUniversity] = useState("");
   const [gradYear, setGradYear] = useState("");
   const [degreeCertificate, setDegreeCertificate] = useState(null);
   const [postGradCertificate, setPostGradCertificate] = useState(null);
   const [speciality, setSpeciality] = useState("");
   const [medRegNumber, setMedRegNumber] = useState("");
-
-  // State for validation errors
   const [errors, setErrors] = useState({});
 
-  // File change handlers for file inputs
+  // File change handlers
   const handleDegreeFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -33,88 +32,119 @@ const AcademicDetails = () => {
     }
   };
 
-  // Form submit handler with validation
-  const handleSubmit = (e) => {
+  // Open (or create) IndexedDB
+  const openDB = () => {
+    return new Promise((resolve, reject) => {
+      const request = window.indexedDB.open("AcademicFilesDB", 1);
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        // Create an object store "files" if it doesn't exist
+        if (!db.objectStoreNames.contains("files")) {
+          db.createObjectStore("files", { keyPath: "id", autoIncrement: true });
+        }
+      };
+      request.onsuccess = (event) => {
+        resolve(event.target.result);
+      };
+      request.onerror = (event) => {
+        reject(event.target.error);
+      };
+    });
+  };
+
+  // Store a file in IndexedDB
+  const storeFileInDB = async (file, fileCategory) => {
+    try {
+      const db = await openDB();
+      const transaction = db.transaction("files", "readwrite");
+      const store = transaction.objectStore("files");
+
+      // Record structure with metadata and the file object
+      const record = {
+        fileCategory, // e.g., "degreeCertificate" or "postGradCertificate"
+        name: file.name,
+        fileData: file, // file object is stored directly (as a Blob)
+        timestamp: new Date(),
+      };
+
+      store.add(record);
+
+      // Wrap the transaction in a promise to handle completion if needed.
+      return new Promise((resolve, reject) => {
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = () => reject(transaction.error);
+      });
+    } catch (error) {
+      console.error("Error storing file in IndexedDB", error);
+    }
+  };
+
+  // Form submit handler
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let formErrors = {};
 
-    // Validate University Name
+    // Validation
     if (!university.trim()) {
       formErrors.university = "University name is required";
     }
-
-    // Validate Graduation Year
     if (!gradYear) {
       formErrors.gradYear = "Graduation year is required";
     } else if (gradYear < 1900 || gradYear > new Date().getFullYear()) {
       formErrors.gradYear = "Please enter a valid graduation year";
     }
-
-    // Validate Degree Certificate (required) and file size check (5MB)
     if (!degreeCertificate) {
       formErrors.degreeCertificate = "Degree certificate file is required";
     } else if (degreeCertificate.size > 5242880) {
       formErrors.degreeCertificate = "Degree certificate file must be less than 5MB";
     }
-
-    // Validate Postgraduate Certificate (optional, but if provided, check file size)
     if (postGradCertificate && postGradCertificate.size > 5242880) {
       formErrors.postGradCertificate = "Postgraduate certificate file must be less than 5MB";
     }
-
-    // Speciality selection validation
     if (!speciality) {
       formErrors.speciality = "Please select a speciality";
     }
-
-    // Validate Medical Registration Number
     if (!medRegNumber.trim()) {
       formErrors.medRegNumber = "Medical Registration Number is required";
     }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      return;
     } else {
       setErrors({});
-      console.log("Form submitted successfully!", {
-        university,
-        gradYear,
-        degreeCertificate,
-        postGradCertificate,
-        speciality,
-        medRegNumber,
-      });
-
-      // Store the inputs in session storage.
-      // For file inputs, only storing file names since File objects are not serializable.
-      const academicData = {
-        university,
-        gradYear,
-        degreeCertificate: degreeCertificate ? degreeCertificate.name : null,
-        postGradCertificate: postGradCertificate ? postGradCertificate.name : null,
-        speciality,
-        medRegNumber,
-      };
-
-      sessionStorage.setItem("academicData", JSON.stringify(academicData));
-      navigate("/Doctor3");
-      // Optionally, reset the form fields here if needed:
-      // setUniversity("");
-      // setGradYear("");
-      // setDegreeCertificate(null);
-      // setPostGradCertificate(null);
-      // setSpeciality("");
-      // setMedRegNumber("");
     }
+
+    // Store the files in IndexedDB
+    if (degreeCertificate) {
+      await storeFileInDB(degreeCertificate, "degreeCertificate");
+    }
+    if (postGradCertificate) {
+      await storeFileInDB(postGradCertificate, "postGradCertificate");
+    }
+
+    // Store other academic details in session storage (for non-file data)
+    const academicData = {
+      university,
+      gradYear,
+      degreeCertificate: degreeCertificate ? degreeCertificate.name : null,
+      postGradCertificate: postGradCertificate ? postGradCertificate.name : null,
+      speciality,
+      medRegNumber,
+    };
+    sessionStorage.setItem("academicData", JSON.stringify(academicData));
+
+    console.log("Form submitted successfully!", academicData);
+    navigate("/Doctor3");
   };
 
   return (
     <div className="main-container2">
       <h1 className="head">Academic Details</h1>
       <div className="div-line"></div>
-
+      
       {/* Progress Bar */}
-      <div className="progress-bar2">
+      <div className="progress-bar1 animate__animated animate__slideInLeft">
         <div className="circle done">
           <img src={personalImg} alt="Personal Info" />
         </div>
@@ -127,9 +157,9 @@ const AcademicDetails = () => {
           <img src={professionalImg} alt="Professional" />
         </div>
       </div>
-
+      
       {/* Info Box */}
-      <div className="info-box2">
+      <div className="info-box1 animate__animated animate__slideInRight">
         <h2>Why Bonex?</h2>
         <hr />
         <ul>
@@ -147,11 +177,10 @@ const AcademicDetails = () => {
           </li>
         </ul>
       </div>
-
+      
       {/* Form */}
       <div className="container2">
         <form onSubmit={handleSubmit}>
-          {/* University Name */}
           <div className="form-row">
             <label htmlFor="university">University Name</label>
             <input
@@ -166,7 +195,6 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          {/* Graduation Year */}
           <div className="form-row">
             <label htmlFor="gradYear">Graduation Year</label>
             <input
@@ -181,7 +209,6 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          {/* Degree Certificate */}
           <div className="form-row">
             <label htmlFor="degreeCertificate">Degree Certificate</label>
             <div className="pstd">
@@ -197,7 +224,6 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          {/* Postgraduate Certificate (Optional) */}
           <div className="form-row">
             <label htmlFor="postGradCertificate">Postgraduate (if any)</label>
             <div className="pstd">
@@ -213,7 +239,6 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          {/* Specialities */}
           <div className="form-row">
             <label htmlFor="specialities">Specialities</label>
             <select
@@ -227,6 +252,7 @@ const AcademicDetails = () => {
               </option>
               <option value="orthopedics">Orthopedics</option>
               <option value="radiology">Radiology</option>
+              <option value="physical therapy">Physical Therapy</option>
               <option value="sports_medicine">Sports Medicine</option>
               <option value="others">Others</option>
             </select>
@@ -235,7 +261,6 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          {/* Medical Registration Number */}
           <div className="form-row">
             <label htmlFor="medRegNumber">Medical Registration Number</label>
             <input
@@ -250,7 +275,9 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          <button type="submit">Submit &amp; Continue</button>
+          <button type="submit" className="submit-btn">
+            Submit &amp; Continue
+          </button>
         </form>
       </div>
     </div>

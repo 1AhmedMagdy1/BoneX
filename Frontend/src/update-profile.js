@@ -1,12 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {
-  Form,
-  Button,
-  Row,
-  Col,
-  Image,
-  Card,
-} from "react-bootstrap";
 import AvatarMale from "./images/avatar-male.jpg";
 import AvatarFemale from "./images/avatarfm.webp";
 
@@ -30,7 +22,6 @@ function EditProfile() {
     if (data) {
       const res = JSON.parse(data);
       setUser(res);
-
       setFormData({
         name: res.userName || "",
         gender: res.gender || "",
@@ -67,241 +58,211 @@ function EditProfile() {
   };
 
   return (
-    <div className="container-fluid mt-5" style={{ backgroundColor: "#EBF4F6" }}> {/* Changed container background */}
-      <Card
-        className="p-4 shadow-sm rounded-lg border-0"
-        style={{ maxWidth: "900px", margin: "0 auto", background: "#FFFFFF" }}
-      >
-        <h2 className="my-4 text-center" style={{ color: "#071952" }}>Update Profile</h2> {/* Changed heading color */}
-        <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col md={8}>
-              <Form.Group as={Row} controlId="formName" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Name <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Enter your name"
-                    required
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }} // Border color for inputs
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formGender" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Gender <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Check
+    <div className="min-h-screen bg-[#EBF4F6] flex items-center justify-center py-10">
+      <div className="bg-white p-6 shadow-sm rounded-lg max-w-[900px] w-full">
+        <h2 className="text-center text-xl font-semibold text-[#071952] my-4">
+          Update Profile
+        </h2>
+        <form onSubmit={handleSubmit} className="md:flex md:space-x-6">
+          {/* Left column: Form Fields */}
+          <div className="md:w-2/3 space-y-4">
+            {/* Name */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Name <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3">
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+                />
+              </div>
+            </div>
+            {/* Gender */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Gender <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3 flex space-x-4">
+                <label className="flex items-center space-x-1">
+                  <input
                     type="radio"
-                    label="Male"
                     name="gender"
                     value="Male"
                     checked={formData.gender === "Male"}
                     onChange={handleChange}
-                    inline
-                    style={{ color: "#071952" }}
                   />
-                  <Form.Check
+                  <span className="text-[#071952]">Male</span>
+                </label>
+                <label className="flex items-center space-x-1">
+                  <input
                     type="radio"
-                    label="Female"
                     name="gender"
                     value="Female"
                     checked={formData.gender === "Female"}
                     onChange={handleChange}
-                    inline
-                    style={{ color: "#071952" }}
                   />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formDOB" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Date of Birth <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    type="date"
-                    name="dateOfBirth"
-                    value={formData.dateOfBirth}
-                    onChange={handleChange}
-                    required
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formMobile" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Mobile <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={3}>
-                  <Form.Control
-                    as="select"
-                    defaultValue="Egypt (+20)"
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  >
-                    <option>Egypt (+20)</option>
-                    {/* Add more country code options as needed */}
-                  </Form.Control>
-                </Col>
-                <Col sm={6}>
-                  <Form.Control
-                    type="tel"
-                    name="mobile"
-                    value={formData.mobile || user?.phoneNumber || ""}
-                    onChange={handleChange}
-                    required
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formEmail" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Email <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formBloodGroup" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Blood Group
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    as="select"
-                    name="bloodGroup"
-                    value={formData.bloodGroup}
-                    onChange={handleChange}
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  >
-                    <option>Choose your blood group</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                  </Form.Control>
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formHeight" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Height <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    type="number"
-                    name="height"
-                    value={formData.height}
-                    onChange={handleChange}
-                    placeholder="Enter height in cm"
-                    required
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} controlId="formBodyWeight" className="mb-3">
-                <Form.Label column sm={3} style={{ color: "#071952" }}>
-                  Body Weight <span style={{ color: "red" }}>*</span>
-                </Form.Label>
-                <Col sm={9}>
-                  <Form.Control
-                    type="number"
-                    name="bodyWeight"
-                    value={formData.bodyWeight}
-                    onChange={handleChange}
-                    placeholder="Enter weight in kg"
-                    required
-                    className="rounded-pill shadow-sm"
-                    style={{ borderColor: "#37B7C3" }}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row} className="mb-3">
-                <Col sm={{ span: 6, offset: 3 }} className="text-center">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    type="submit"
-                    className="rounded-pill px-4"
-                    style={{ backgroundColor: "#088395", borderColor: "#088395" }} // Button color
-                  >
-                    Submit
-                  </Button>
-                </Col>
-              </Form.Group>
-
-              <Row className="text-center mt-2">
-                <Col>
-                  <a href="#" className="text-muted">
-                    Download Data
-                  </a>{" "}
-                  |{" "}
-                  <a href="#" className="text-muted">
-                    Delete Account
-                  </a>
-                </Col>
-              </Row>
-            </Col>
-
-            <Col md={4} className="text-center">
-              <Image
-                src={
-                  profileImage ||
-                  (user && user.gender === "Female" ? AvatarFemale : AvatarMale)
-                }
-                roundedCircle
-                style={{
-                  width: "150px",
-                  height: "150px",
-                  objectFit: "cover",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                }}
-                alt="Profile"
-                className="mb-3"
-              />
-              <Form.Group controlId="formFile" className="mb-3">
-                <Form.Label style={{ color: "#071952" }}>Upload Profile Picture</Form.Label>
-                <Form.Control
-                  type="file"
-                  onChange={handleImageChange}
-                  className="rounded-pill shadow-sm"
-                  style={{ borderColor: "#37B7C3" }}
+                  <span className="text-[#071952]">Female</span>
+                </label>
+              </div>
+            </div>
+            {/* Date of Birth */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Date of Birth <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3">
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
                 />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Form>
-      </Card>
+              </div>
+            </div>
+            {/* Mobile */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Mobile <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3 flex space-x-2">
+                <select className="rounded-full shadow-sm border border-[#37B7C3] py-2 px-3">
+                  <option>Egypt (+20)</option>
+                  {/* Add more country code options as needed */}
+                </select>
+                <input
+                  type="tel"
+                  name="mobile"
+                  value={formData.mobile || user?.phoneNumber || ""}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+                />
+              </div>
+            </div>
+            {/* Email */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+                />
+              </div>
+            </div>
+            {/* Blood Group */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">Blood Group</label>
+              <div className="col-span-3">
+                <select
+                  name="bloodGroup"
+                  value={formData.bloodGroup}
+                  onChange={handleChange}
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+                >
+                  <option>Choose your blood group</option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                </select>
+              </div>
+            </div>
+            {/* Height */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Height <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3">
+                <input
+                  type="number"
+                  name="height"
+                  value={formData.height}
+                  onChange={handleChange}
+                  placeholder="Enter height in cm"
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+                />
+              </div>
+            </div>
+            {/* Body Weight */}
+            <div className="grid grid-cols-4 items-center">
+              <label className="text-[#071952] font-medium">
+                Body Weight <span className="text-red-500">*</span>
+              </label>
+              <div className="col-span-3">
+                <input
+                  type="number"
+                  name="bodyWeight"
+                  value={formData.bodyWeight}
+                  onChange={handleChange}
+                  placeholder="Enter weight in kg"
+                  required
+                  className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+                />
+              </div>
+            </div>
+            {/* Submit Button */}
+            <div className="flex justify-center mt-4">
+              <button
+                type="submit"
+                className="bg-[#088395] border border-[#088395] text-white rounded-full px-6 py-2 text-sm"
+              >
+                Submit
+              </button>
+            </div>
+            {/* Links */}
+            <div className="text-center mt-2">
+              <a href="#" className="text-gray-500 hover:underline">
+                Download Data
+              </a>{" "}
+              |{" "}
+              <a href="#" className="text-gray-500 hover:underline">
+                Delete Account
+              </a>
+            </div>
+          </div>
+          {/* Right column: Profile Image and File Upload */}
+          <div className="md:w-1/3 mt-6 md:mt-0 flex flex-col items-center">
+            <img
+              src={
+                profileImage ||
+                (user && user.gender === "Female" ? AvatarFemale : AvatarMale)
+              }
+              alt="Profile"
+              className="mb-3 rounded-full object-cover shadow"
+              style={{ width: "150px", height: "150px" }}
+            />
+            <div className="w-full">
+              <label className="block text-[#071952] mb-2">
+                Upload Profile Picture
+              </label>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                className="w-full rounded-full shadow-sm border border-[#37B7C3] py-2 px-4"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
