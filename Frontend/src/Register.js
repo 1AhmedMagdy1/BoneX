@@ -4,10 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import avtmale from "./images/avatar-male.jpg";
 import avtfemale from "./images/avatarfm.webp";
-import "./register.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSpinner
+} from "@fortawesome/free-solid-svg-icons";
 
+import "./register.css";
 const Register = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   // Form fields
   const [username, setUsername] = useState("");
@@ -68,7 +73,9 @@ const Register = () => {
     }
 
     try {
+      
       // Dynamically choose profile picture based on gender
+      setLoading(true);
       const profilePictureValue = gender === "1" ? avtmale : avtfemale;
     
       // Fetch the image and convert it to a Blob
@@ -110,6 +117,27 @@ const Register = () => {
       );
     
       if (response.status === 200) {
+
+        try{
+                  const responsec=await axios.post("http://chatservice.runasp.net/api/ChatUsers", {
+                    id: email,
+                    userName: username,
+                    
+                  });
+                  console.log('from assign');
+                  
+                    if(responsec.status===200||responsec.status===201){
+                    
+                      console.log('assignChatUser is done:',responsec.data);
+                    }
+                  else 
+              
+                      console.log('assignChatUser is faild:',e);
+                  }catch(e){
+                    console.log('assignChatUser is faild:',e);
+                    
+                  }
+
         const userInfo = {
           email: email,
           password: password,
@@ -134,6 +162,10 @@ const Register = () => {
     } catch (error) {
       console.error("Registration failed:", error);
     }
+      finally {
+        setLoading(false);
+
+      }
   };
 
   return (
@@ -254,9 +286,9 @@ const Register = () => {
           </div>
 
           <div className="signup">
-            <button type="submit">
-              SignUp{" "}
-              <i className="bx bx-chevrons-right" style={{ fontSize: "17px" }}></i>
+            <button type="submit"   disabled={loading}>
+              
+              {loading ? <FontAwesomeIcon icon={faSpinner} spin /> : "SignUp"}
             </button>
           </div>
         </form>

@@ -6,6 +6,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // Ensure Bootstrap JS is imported
 import axios from "axios";
 import professionalImg from "./images/professional.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSpinner
+} from "@fortawesome/free-solid-svg-icons";
+
 import AwardModal from "./AwardModal";
 import "./doctor3.css";
 
@@ -14,6 +19,7 @@ const Doctor3 = () => {
   const fileInputRef = useRef(null);
   const [uploadedAwardFile, setUploadedAwardFile] = useState(null);
   const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 const[sh,setsh]=useState(false);
   
@@ -143,7 +149,7 @@ const[sh,setsh]=useState(false);
     } else {
       setErrors({});
     }
-
+    setLoading(true);
     // Retrieve stored data from previous pages
     const doctorDataStr = sessionStorage.getItem("doctorData");
     const academicDataStr = sessionStorage.getItem("academicData");
@@ -237,6 +243,7 @@ const[sh,setsh]=useState(false);
       console.error("API call failed:", error);
       sessionStorage.setItem("completeDoctorData", JSON.stringify(combinedData));
     }
+    finally{setLoading(false);}
   };
 
   return (

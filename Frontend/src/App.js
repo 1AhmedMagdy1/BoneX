@@ -22,6 +22,11 @@ import Chatpage from './Chatpage.js'
 import DoctorProfile from './doctorProfile.js';
 import AwardModal from './AwardModal.js';
 import JitsiMeet from './JitsiMeet.js';
+import PatientProfile from './PatientProfile.jsx';
+import PatientFeedback from './PatientFeedback.js';
+import DoctorDetails from './doctorDetails.jsx'
+
+import Notifications from './Notifications.jsx';
 function App() {
   return (
     
@@ -42,9 +47,10 @@ function App() {
         <Route path="/wrd" element={<AwardModal />} />
         <Route path="/meet" element={<JitsiMeet />} />
       
-       
-
-
+        <Route path="/profile" element={<PatientProfile />} />
+        <Route path="/notifications" element={<Notifications/>}/>
+        <Route path="/patientfeedback" element={<PatientFeedback/>}/>
+        <Route path="/doctorDetails/:id" element={<DoctorDetails/>}/>
 
       
         <Route path="/login" element={<Login />} />
@@ -55,7 +61,7 @@ function App() {
         <Route path="/changepassword" element={<Changepassword />} />
 
       </Routes>
-   
+      <Footer />
     </Router>
     
   );

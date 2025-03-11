@@ -43,7 +43,7 @@ function Login() {
 async function assignChatUser( Id, UserName){
 
   try{
-const response=await axios.post("http://localhost:5290/api/ChatUsers", {
+const response=await axios.post("http://chatservice.runasp.net/api/ChatUsers", {
   Id: Id,
   UserName: UserName});
 console.log('from assign');
@@ -79,7 +79,7 @@ console.log('from assign');
        console.log('from login:',response.data.id);
        console.log('from login:',response.data.firstName);
        try{
-          const responsec=await axios.post("http://localhost:5290/api/ChatUsers", {
+          const responsec=await axios.post("http://chatservice.runasp.net/api/ChatUsers", {
             id: response.data.email,
             userName: response.data.firstName,
             
@@ -128,7 +128,7 @@ console.log('from assign');
 
         {/* Right side: Login form */}
         <div className="login-form-container">
-          <h2 className="text-center mb-2">Welcome back</h2>
+          <h2 className="text-center mb-2">Welcome back 💫</h2>
           <p className="text-center mb-4">Login to your account</p>
 
           {errorMessage && (
@@ -214,7 +214,7 @@ console.log('from assign');
             {/* Submit Button */}
             <button
               type="submit"
-              className="btn btn-dark w-100 login-btn"
+              className=" w-100 login-btn"
               disabled={loading}
             >
               {loading ? <FontAwesomeIcon icon={faSpinner} spin /> : "Login"}
