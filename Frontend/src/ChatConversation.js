@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as signalR from '@microsoft/signalr';
+import EmojiPicker from 'emoji-picker-react';
+import { BsEmojiSmile } from 'react-icons/bs';
 
 function ChatConversation({ conversation, currentUserId, updateConversation }) {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const chatBoxRef = useRef(null);
+  const inputRef = useRef(null);
   const [connection, setConnection] = useState(null);
 
   const partnerId = conversation.partnerId;
@@ -30,7 +34,7 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
     setConnection(newConnection);
   }, [currentUserId]);
 
-  // Start connection
+  // Start SignalR connection
   useEffect(() => {
     if (connection) {
       connection
@@ -44,7 +48,6 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
   useEffect(() => {
     if (connection) {
       const messageHandler = (sender, message, type, convId) => {
-        // Handle both existing and new conversations
         if (conversation.conversationId === null || convId === conversation.conversationId) {
           const newMessage = {
             senderId: sender,
@@ -54,7 +57,6 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
             createdAt: new Date(),
           };
           setMessages((prev) => [...prev, newMessage]);
-          // Update conversationId if it was null (new conversation)
           if (conversation.conversationId === null) {
             updateConversation({ ...conversation, conversationId: convId });
           }
@@ -69,19 +71,41 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
     }
   }, [connection, conversation, updateConversation]);
 
-  // Auto-scroll chat box
+  // Auto-scroll chat box to the latest message
   useEffect(() => {
     if (chatBoxRef.current) {
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   }, [messages]);
 
+  // Handle sending a message
   const handleSendMessage = () => {
     if (connection && messageInput.trim() !== '') {
       connection
         .invoke('SendMessage', currentUserId, partnerId, messageInput, 'text')
         .catch((err) => console.error('Error sending message:', err));
       setMessageInput('');
+      setShowEmojiPicker(false); // Close emoji picker after sending
+    }
+  };
+
+  // Handle emoji selection and insertion
+  const onEmojiClick = (emojiObject) => {
+    const input = inputRef.current;
+    if (input) {
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      const newValue =
+        messageInput.slice(0, start) +
+        emojiObject.emoji +
+        messageInput.slice(end);
+      setMessageInput(newValue);
+      // Maintain cursor position after inserting emoji
+      setTimeout(() => {
+        input.selectionStart = input.selectionEnd = start + emojiObject.emoji.length;
+      }, 0);
+    } else {
+      setMessageInput((prev) => prev + emojiObject.emoji);
     }
   };
 
@@ -101,6 +125,7 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
           </div>
         </div>
       </div>
+
       {/* Scrollable messages area */}
       <div className="flex-1 p-5 overflow-y-auto flex flex-col" ref={chatBoxRef}>
         {messages.map((msg, idx) => (
@@ -137,21 +162,37 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
           </div>
         ))}
       </div>
-      {/* Fixed input area */}
-      <div className="bg-white border-t border-gray-200 p-3 flex items-center gap-3">
-        <input
-          type="text"
-          placeholder="Type a message..."
-          className="flex-1 p-2 border border-gray-300 rounded-full outline-none text-sm"
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-        />
-        <button
-          onClick={handleSendMessage}
-          className="bg-[#008CBA] text-white px-4 py-2 rounded-full font-semibold hover:bg-[#005F7A] transition-colors"
-        >
-          Send
-        </button>
+
+      {/* Fixed input area with emoji picker */}
+      <div className="relative">
+        <div className="bg-white border-t border-gray-200 p-3 flex items-center gap-3">
+          <button
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <BsEmojiSmile size={24} />
+          </button>
+          <input
+            type="text"
+            placeholder="Type a message..."
+            className="flex-1 p-2 border border-gray-300 rounded-full outline-none text-sm"
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            ref={inputRef}
+          />
+          <button
+            onClick={handleSendMessage}
+            className="bg-[#008CBA] text-white px-4 py-2 rounded-full font-semibold hover:bg-[#005F7A] transition-colors"
+            style={{borderRadius: "50px"}}
+          >
+            Send
+          </button>
+        </div>
+        {showEmojiPicker && (
+          <div className="absolute bottom-full left-0 mb-2">
+            <EmojiPicker onEmojiClick={onEmojiClick} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -169,6 +169,106 @@ const appointments = [
     type: "Online",
     status: "NoShow",
   },
+  {
+    id: 5,
+    name: "John Doe",
+    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    date: "2025-02-20 10:00 AM to 11:00 AM",
+    gender: "Male",
+    dob: "1985-04-12",
+    type: "Clinic",
+    status: "Booked",
+  },
+  {
+    id: 6,
+    name: "Jane Smith",
+    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    date: "2025-02-20 11:30 AM to 12:30 PM",
+    gender: "Female",
+    dob: "1990-08-25",
+    type: "Online",
+    status: "Completed",
+  },
+  {
+    id: 7,
+    name: "Robert Brown",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    date: "2025-02-20 02:00 PM to 03:00 PM",
+    gender: "Male",
+    dob: "1978-12-05",
+    type: "Clinic",
+    status: "Canceled",
+  },
+  {
+    id: 8,
+    name: "Michael Green",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    date: "2025-02-20 03:00 PM to 04:00 PM",
+    gender: "Male",
+    dob: "1992-06-15",
+    type: "Online",
+    status: "NoShow",
+  },
+  {
+    id: 7,
+    name: "Robert Brown",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    date: "2025-02-20 02:00 PM to 03:00 PM",
+    gender: "Male",
+    dob: "1978-12-05",
+    type: "Clinic",
+    status: "Canceled",
+  },
+  {
+    id: 8,
+    name: "Michael Green",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    date: "2025-02-20 03:00 PM to 04:00 PM",
+    gender: "Male",
+    dob: "1992-06-15",
+    type: "Online",
+    status: "NoShow",
+  },
+  {
+    id: 7,
+    name: "Robert Brown",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    date: "2025-02-20 02:00 PM to 03:00 PM",
+    gender: "Male",
+    dob: "1978-12-05",
+    type: "Clinic",
+    status: "Canceled",
+  },
+  {
+    id: 8,
+    name: "Michael Green",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    date: "2025-02-20 03:00 PM to 04:00 PM",
+    gender: "Male",
+    dob: "1992-06-15",
+    type: "Online",
+    status: "NoShow",
+  },
+  {
+    id: 7,
+    name: "Robert Brown",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    date: "2025-02-20 02:00 PM to 03:00 PM",
+    gender: "Male",
+    dob: "1978-12-05",
+    type: "Clinic",
+    status: "Canceled",
+  },
+  {
+    id: 8,
+    name: "Michael Green",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    date: "2025-02-20 03:00 PM to 04:00 PM",
+    gender: "Male",
+    dob: "1992-06-15",
+    type: "Online",
+    status: "NoShow",
+  },
 ];
 
 const AppointmentRow = ({ appointment }) => {
@@ -413,7 +513,7 @@ const AppointmentRow = ({ appointment }) => {
         </div>
       </div>
 
-      
+      <div style={{ maxHeight: "400px", overflowY: "auto" }}>
       <table className="appointment-table">
         <thead>
           <tr>
@@ -433,6 +533,7 @@ const AppointmentRow = ({ appointment }) => {
         ))}
         </tbody>
       </table>
+      </div>
     </div>
     </div>
   </>

@@ -39,6 +39,36 @@
   border-radius: 50%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.user-dropdown{
+position: absolute;
+  top: 60px; /* Adjusted to clear the button */
+  right: 0;
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 300px;
+  height: 100px;
+  
+  
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+
+}
+.user-dropdown a{
+  display: block;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  padding: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: 0.3s;
+  border-radius: 5px;
+  
+}
 
 /* Define .notification-btn base style if not already defined */
 .notification-btn {
@@ -189,7 +219,6 @@
 .view-all:hover {
   background-color: #0056b3;
 }
-
 
 
 

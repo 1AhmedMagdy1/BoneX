@@ -48,12 +48,12 @@ function ChatPage() {
           <input 
             type="text"
             placeholder="Enter receiver id..."
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded "
             value={newReceiverId}
             onChange={(e) => setNewReceiverId(e.target.value)}
           />
           <button 
-            className="mt-2 w-full bg-blue-500 text-white p-2 rounded"
+            className="mt-2 w-full hover:bg-[#005F7A] transition-colors text-white p-2 rounded bg-[#008CBA]"
             onClick={handleStartChat}
           >
             Start Chat
