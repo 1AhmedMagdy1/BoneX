@@ -211,14 +211,14 @@ const AcademicDetails = () => {
 
           <div className="form-row">
             <label htmlFor="degreeCertificate">Degree Certificate</label>
-            <div className="pstd">
+            
               <input
                 type="file"
                 id="degreeCertificate"
                 onChange={handleDegreeFileChange}
               />
-              <span>Max Size is 5MB</span>
-            </div>
+              
+            
             {errors.degreeCertificate && (
               <span className="error">{errors.degreeCertificate}</span>
             )}
@@ -226,14 +226,13 @@ const AcademicDetails = () => {
 
           <div className="form-row">
             <label htmlFor="postGradCertificate">Postgraduate (if any)</label>
-            <div className="pstd">
+            
               <input
                 type="file"
                 id="postGradCertificate"
                 onChange={handlePostGradFileChange}
               />
-              <span>Max Size is 5MB</span>
-            </div>
+            
             {errors.postGradCertificate && (
               <span className="error">{errors.postGradCertificate}</span>
             )}

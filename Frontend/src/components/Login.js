@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 import {
   faUser,
   faLock,
@@ -15,7 +17,7 @@ import doctorImg from "../images/doctorimg3.png"; // Ensure your image path is c
 
 function Login() {
   const navigate = useNavigate();
-
+ 
   // State to track form data
   const [formData, setFormData] = useState({
     username: "",
@@ -75,7 +77,10 @@ console.log('from assign');
 
         window.sessionStorage.setItem("anuser", true);
         window.sessionStorage.setItem("userInfo", JSON.stringify(response.data));
- 
+  
+        // Update context with the user info
+          
+
        console.log('from login:',response.data.id);
        console.log('from login:',response.data.firstName);
        try{

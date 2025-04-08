@@ -2,20 +2,24 @@ import React, { useEffect, useState } from 'react';
 
 function ConversationList({ userId, onSelectConversation }) {
   const [conversations, setConversations] = useState([]);
+
   //http://chatservice.runasp.net/
 
   useEffect(() => {
     fetch(`http://chatservice.runasp.net/api/Conversations/user/${userId}`)
-      .then((res) => res.json())
-      .then((data) => setConversations(data))
-      .catch((err) => console.error("Error fetching conversations:", err));
-  }, [userId]);
+        .then((res) => res.json())
+        .then((data) => {
+            setConversations(data);
+        })
+        .catch((err) => console.error("Error fetching conversations:", err));
+}, [userId]); 
+
 
   return (
     <div className="overflow-y-auto">
       {conversations.map((conv) => (
         <div 
-          key={conv.conversationId} 
+          key={conv.partnerId} 
           className="flex items-center p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50"
           onClick={() => onSelectConversation(conv)}
         >
@@ -26,7 +30,7 @@ function ConversationList({ userId, onSelectConversation }) {
           />
           <div className="flex flex-col w-full">
             <div className="flex justify-between mb-1">
-              <span className="text-sm font-medium">{conv.partnerId}</span>
+              <span className="text-sm font-medium">{conv.partnerName}</span>
               <span className="text-xs text-gray-500">
                 {conv.lastMessageTime ? new Date(conv.lastMessageTime).toLocaleString() : ""}
               </span>

@@ -1,0 +1,99 @@
+/* General Page Container */
+.page-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+  }
+  
+  /* Page Title */
+  .page-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Card Layout */
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  /* Upload Area */
+  .upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    background-color: #fafafa;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  
+  .upload-area:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Upload Label */
+  .upload-label {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  
+  .upload-text {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  /* Hide the default file input */
+  .hidden-input {
+    display: none;
+  }
+  
+  /* Preview Container */
+  .preview-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .preview-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  /* Analyze Button */
+  .analyze-button {
+    display: block;
+    margin: 0 auto;
+    background-color: #071952;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .analyze-button:hover {
+    background-color: #0a2a7a;
+    transform: scale(1.05);
+  }
+  
+  /* Result Message */
+  .result-message {
+    margin-top: 20px;
+    background-color: #b3ffcc;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 500;
+  }
+  

@@ -10,7 +10,7 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
   const chatBoxRef = useRef(null);
   const inputRef = useRef(null);
   const [connection, setConnection] = useState(null);
-
+const [partnerNAme, setPartnername] = useState(null);
   const partnerId = conversation.partnerId;
 
   // Fetch conversation messages when conversation changes
@@ -18,7 +18,7 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
     if (conversation.conversationId) {
       fetch(`http://chatservice.runasp.net/api/Conversations/${conversation.conversationId}`)
         .then((res) => res.json())
-        .then((data) => setMessages(data.chatMessages || []))
+        .then((data) => {setMessages(data.chatMessages || []); setPartnername(partnerId===data.userAid?data.userAname:data.userBname)})
         .catch((err) => console.error('Error fetching conversation:', err));
     } else {
       setMessages([]);
@@ -120,7 +120,7 @@ function ChatConversation({ conversation, currentUserId, updateConversation }) {
             className="w-11 h-11 rounded-full object-cover"
           />
           <div className="flex flex-col">
-            <span className="text-base font-medium">{partnerId}</span>
+            <span className="text-base font-medium">{partnerNAme}</span>
             <span className="text-xs text-green-500">Online</span>
           </div>
         </div>

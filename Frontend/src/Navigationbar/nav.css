@@ -3,12 +3,27 @@
   background-color: #071952;
   padding: 15px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   width: 100%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+/* Logo container */
+.navbar-left img {
+  height: 40px; /* Adjust as needed */
+}
+
+/* Center links container */
+.navbar-center,
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Navbar links */
 .navbar a {
   color: white;
   text-decoration: none;
@@ -21,10 +36,19 @@
 
 .navbar a:hover {
   background-color: #088395;
-  color: #fff;
 }
 
-/* NAVBAR RIGHT SIDE: USER LOGGED IN */
+/* Hamburger Menu Button */
+.menu-toggle {
+  display: none;
+  font-size: 2rem;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* User Logged In & Notification styles remain unchanged */
 .user-logged {
   display: flex;
   align-items: center;
@@ -221,4 +245,13 @@ position: absolute;
 }
 
 
+/* Notification icon styling */
+.notification-icon {
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.notification-btn:hover .notification-icon {
+  color: #088395; /* Accent color on hover */
+}
 

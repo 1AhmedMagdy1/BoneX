@@ -60,6 +60,7 @@ const RegisterDoctor1 = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userpic, setUserpic] = useState(null);
+  const [idPhoto, setIdPhoto] = useState(null); // New state for ID photo
 
   // State for validation errors
   const [errors, setErrors] = useState({});
@@ -91,7 +92,7 @@ const RegisterDoctor1 = () => {
       const store = transaction.objectStore("files");
 
       const record = {
-        fileCategory, // e.g., "userpic"
+        fileCategory, // e.g., "userpic" or "idPhoto"
         name: file.name,
         fileData: file, // The file object (Blob) is stored directly
         timestamp: new Date(),
@@ -108,11 +109,19 @@ const RegisterDoctor1 = () => {
     }
   };
 
-  // Handler for file change
+  // Handler for userpic file change
   const handleUserpicFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setUserpic(file);
+    }
+  };
+
+  // Handler for ID Photo file change
+  const handleIdPhotoFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setIdPhoto(file);
     }
   };
 
@@ -134,6 +143,11 @@ const RegisterDoctor1 = () => {
       newErrors.userpic = "Doctor image is required";
     } else if (userpic.size > 5242880) {
       newErrors.userpic = "Doctor image must be less than 5MB";
+    }
+    if (!idPhoto) {
+      newErrors.idPhoto = "ID photo is required";
+    } else if (idPhoto.size > 5242880) {
+      newErrors.idPhoto = "ID photo must be less than 5MB";
     }
     if (!selectedCountryCode) {
       newErrors.countryCode = "Country code is required";
@@ -160,17 +174,19 @@ const RegisterDoctor1 = () => {
       setErrors({});
     }
 
-    // Store userpic file in IndexedDB
+    // Store userpic and idPhoto files in IndexedDB
     await storeFileInDB(userpic, "userpic");
+    await storeFileInDB(idPhoto, "idPhoto");
 
     console.log("Form submitted successfully!");
 
     // Store the data in session storage.
-    // Here, only the file name is stored; the actual file is in IndexedDB.
+    // Here, only the file names are stored; the actual files are in IndexedDB.
     const doctorData = {
       name,
       dob,
       userpic: userpic.name,
+      idPhoto: idPhoto.name,
       gender,
       countryCode: selectedCountryCode,
       mobile,
@@ -319,6 +335,18 @@ const RegisterDoctor1 = () => {
             />
             {errors.userpic && (
               <span className="error">{errors.userpic}</span>
+            )}
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="idphoto">ID Photo</label>
+            <input
+              type="file"
+              id="idphoto"
+              onChange={handleIdPhotoFileChange}
+            />
+            {errors.idPhoto && (
+              <span className="error">{errors.idPhoto}</span>
             )}
           </div>
 
