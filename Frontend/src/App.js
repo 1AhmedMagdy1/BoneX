@@ -1,109 +1,94 @@
-import React, { useEffect, useState,useContext } from 'react';
-import '../src/App.css'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Login from './components/Login';
-// index.js or App.js
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React from "react";
+import { Link } from "react-router-dom";
+import img1 from "./images/ConsultAdoctor.jpg";
 
-import Nav from './Navigationbar/Nav';
+const Caroselv1 = () => {
+  
 
-import RegisterDoctor1 from "./RegisterDoctor1";
-
-import EditProfile from './update-profile';
-import Changepassword from './changepassword';
-
-import AcademicDetails from './doctor2';
-import Doctor3 from './doctor3';
-import Register from './Register';
-import HomepageD from './main';
-import Footer from './footer.jsx'
-import UploadComponent from './XrayCheck.jsx'
-import Home from './Home.js'
-import Doctors from './Doctors.js'
-import Chatpage from './Chatpage.js' 
-import DoctorProfile from './doctorProfile.js';
-import AwardModal from './AwardModal.js';
-import JitsiMeet from './JitsiMeet.js';
-import PatientProfile from './PatientProfile.jsx';
-import PatientFeedback from './PatientFeedback.js';
-import DoctorDetails from './doctorDetails.jsx'
-import Pagenotfound from './pagenotfound.js';
-import Notifications from './Notifications.jsx';
-
-import Doctorsv1 from './Doctorsv1.js';
-import Homev1 from './Homev1.js';
-import IdentityVerification from './IdentityVerification.jsx';
-
-function App() {
+  const h5Style = {
+    fontFamily: "'Lato', sans-serif",
+    fontStyle: "normal",
+    fontWeight: 400,
+    color: "rgb(54, 54, 54)",
+    fontSize: "18px",
+    lineHeight: "27px",
+    marginTop: "20px",
+  };
 
 
-const[isAuthenticated,setisAuthenticated]=useState(false)
-useEffect(()=>{
-
-if(sessionStorage.getItem('userInfo')){
- 
-  setisAuthenticated(true);
-}
-})
 
   return (
-    
-    
-    <Router>
-    <Nav />
-      <Routes>
-        <Route path="/" element={<Homev1 />} />
-        <Route path="/" element={<Home />} />
+    <div
+      style={{
+        width: "100%",
+        height: "679px",
+        backgroundColor: "white",
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      <img
+        src={img1}
+        alt="Consult a doctor"
+        className="animate__animated animate__fadeInLeft"
+        style={{
+          width: "55%",
+          height: "100%",
+          objectFit: "cover",
+          border: "none",
+          WebkitMaskImage: "linear-gradient(to right, black 50%, transparent)",
+          maskImage: "linear-gradient(to right, black 50%, transparent)",
+        }}
+      />
 
-        <Route path="/doctors" element={<Doctors />} />
-        <Route path="/doctorsv1" element={<Doctorsv1 />} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          position: "absolute",
+          top: "50%",
+          left: "74%",
+          transform: "translate(-50%, -50%)",
+          width: "40%",
+          height: "50%",
+          justifyContent: "center",
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "'Roboto', sans-serif",
+            fontStyle: "normal",
+            fontWeight: 100,
+            color: "rgb(41, 124, 165)",
+            fontSize: "52px",
+            lineHeight: "59px",
+            marginTop: "75px",
+          }}
+          className="animate__animated animate__backInRight animate__delay-1s"
+        >
+          Remote monitoring <br />technology with a<br /> personal touch
+        </h1>
 
-        <Route path="/register" element={<Register />} />
-        <Route path="/Doctor1" element={<RegisterDoctor1 />} />
-        <Route path="/Doctor3" element={<Doctor3 />} />
-        <Route path="/Doctor2" element={<AcademicDetails />} />
-        <Route path="/iv" element={<IdentityVerification />} />
-        
-        
-    
+        <h5
+          style={h5Style}
+          className="animate__animated animate__backInRight animate__delay-1s"
+        >
+          Experience seamless healthcare: easily book appointments with our top
+          doctors, <br />
+          access your X-ray results in an instant, and securely store your
+          medical history for truly personalized care.
+        </h5>
 
-
-
- 
-
-        <Route path="/profile" element={<PatientProfile />} />
-        <Route path="/patientfeedback" element={<PatientFeedback/>}/>
-        <Route path="/doctorDetails/:id" element={<DoctorDetails/>}/>
-       
-        <Route path="/xray" element={<UploadComponent />} />
-        <Route path="/chat" element={<Chatpage />} />
-        <Route path="/meet" element={<JitsiMeet />} />
-        <Route path="/notifications" element={<Notifications/>}/>
-        <Route path="/changepassword" element={<Changepassword />} />
-        <Route path="/editprofile" element={<EditProfile />} />
-     
-
-
-      
-     
-
-<Route path="/homed" element={<HomepageD />} />
-<Route path="/doctorprofile" element={<DoctorProfile />} />
-<Route path="/wrd" element={<AwardModal />} />
-
-
-      
-        <Route path="/login" element={<Login />} />
-       
-        
-       
-        <Route path="*" element={<Pagenotfound />} />
-      </Routes>
-      <Footer />
-    </Router>
-    
+        <button
+          
+          className="animate__animated animate__backInRight animate__delay-1s font-roboto text-[16px] font-medium px-5 py-2.5 rounded w-[150px] bg-[rgb(41,124,165)] text-white cursor-pointer mt-[80px] transition-colors duration-300 ease-in-out hover:bg-[rgb(31,104,135)]"
+        >
+          <Link to={"/doctorsv1"}>Book Now</Link>
+          
+        </button>
+      </div>
+    </div>
   );
-}
+};
 
-export default App;
+export default Caroselv1;

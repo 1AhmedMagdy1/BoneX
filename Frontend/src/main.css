@@ -372,6 +372,12 @@ background-image: none  ;
       color: #333   ;
       font-weight: 600   ;
     }
+    .status-followup{
+      background: #2661a8   ; 
+      color: white   ;
+      font-weight: 600   ;
+
+    }
 
     /* Dropdown for table actions */
     .dropdown {

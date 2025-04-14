@@ -1,8 +1,10 @@
 import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import ModalComponent from './ModalComponent';
 function DoctorCardv1({ doctor }) {
   const rating = doctor.rating !== undefined ? doctor.rating : 0;
+const [isModalopen, setIsModalOpen] = useState(false);
 
   const renderStars = () => {
     const fullStars = Math.round(rating);
@@ -22,37 +24,44 @@ function DoctorCardv1({ doctor }) {
         );
       });
   };
+const handleBook=()=>{
+setIsModalOpen(true);
 
+
+}
+const handleClose = () => setIsModalOpen(false);
   return (
     <div className="flex flex-col h-full bg-white p-4 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
       <img
-        src={doctor.image}
-        alt={doctor.name}
+        src={`http://bonex.runasp.net${doctor.profilePicture}`}
+        alt={doctor.fullName}
         className="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-2 border-gray-200"
       />
       <div className="text-center flex-grow">
-        <h3 className="text-lg font-semibold text-blue-700">{doctor.name}</h3>
-        <p className="text-sm text-gray-600">{doctor.specialization}</p>
+        <h3 className="text-lg font-semibold text-blue-700">{doctor.fullName}</h3>
+        <p className="text-sm text-gray-600">{doctor.speciality}</p>
         <div className="flex items-center justify-center mt-2">
           {renderStars()}
           <span className="text-xs text-gray-500 ml-2">{rating.toFixed(1)}</span>
         </div>
-        <p className="text-sm text-gray-700 mt-2 line-clamp-2">{doctor.description}</p>
+        <p className="text-sm text-gray-700 mt-2 line-clamp-2">{doctor.brief}</p>
       </div>
       <div className="mt-auto flex items-center justify-around pt-4 border-t border-gray-200">
         <Link
-          to={`/doctors/${doctor.id}`}
+          to={`/doctorprofile/${doctor.id}`}
           className="bg-[#287DA5] text-white px-6 py-3 text-sm rounded hover:bg-[#071952] transition duration-300"
         >
           View Detail
         </Link>
         <button
           className="bg-[#37B7C3] text-white px-6 py-3 text-sm rounded hover:bg-[#287DA5] transition duration-300"
-          onClick={() => console.log('Booking doctor id:', doctor.id)}
+          onClick={ handleBook}
         >
           Book Only
         </button>
       </div>
+      {(<ModalComponent isopen={isModalopen} handleClose={handleClose} doctorid={doctor.id}/>)}
+      
     </div>
   );
 }

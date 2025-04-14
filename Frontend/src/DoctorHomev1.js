@@ -1,14 +1,20 @@
-import React from 'react';
+import {React,useEffect,useState} from 'react';
 import Slider from 'react-slick';
 import DoctorCardv1 from './components/DoctorCardv1';
 import TheImage from './images/avatar-male.jpg'; // adjust path as needed
 import { useNavigate } from 'react-router-dom';
 import './doctorhomev1.css'
 export default function Doctors() {
+  const [doctors, setdoctors] = useState([]);
   const navigate = useNavigate();
   const showAllClick = () => navigate('/doctorsv1');
 
-  const doctors = [
+
+  useEffect(() => {
+    fetch('http://bonex.runasp.net/Doctor/doctors').then((res)=>res.json()).then((data)=>setdoctors(data))
+
+  }, []);
+  const docstors = [
     {
       id: '1',
       name: 'Dr. Ahmed Imam',

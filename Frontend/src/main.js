@@ -9,11 +9,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
+import AvailabilityModal from './components/AvailabilityModal.js'
 import './main.css';
 
 const HomePage = () => {
   const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('userInfo')));
-  const [value, setValue] = useState(dayjs());
+ const [isAvailabilityModalOpen ,setisAvailabilityModalOpen ]=useState(false);
 
   // Appointments stored in state for updates
   const [appointmentsData, setAppointmentsData] = useState([
@@ -56,6 +57,16 @@ const HomePage = () => {
       dob: "1992-06-15",
       type: "Online",
       status: "NoShow",
+    },
+    {
+      id: 5,
+      name: "Michael Green",
+      image: "https://randomuser.me/api/portraits/men/4.jpg",
+      date: "2025-02-20 03:00 PM to 04:00 PM",
+      gender: "Male",
+      dob: "1992-06-15",
+      type: "Online",
+      status: "FollowUp",
     },
     
   ]);
@@ -125,6 +136,81 @@ const HomePage = () => {
   const handleCancelEdit = () => {
     setEditingAppointment(null);
   };
+
+const assignDoctorAvailability=async (schedule)=>{
+console.log('insude');
+
+// Ensure this code is within an async function
+for (let i = 0; i < schedule.length; i++){
+  const bdy = {
+    dayOfWeek: i,
+    startTime: schedule[i].startTime,
+    endTime: schedule[i].endTime,
+    isAvailable: schedule[i].working
+  };
+  console.log('insude vd',bdy);
+  try {
+    const res = await fetch('http://bonex.runasp.net/api/DoctorAvailability', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${user?.token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(bdy)
+    });
+    
+    if (res.ok) {
+      const jsonResponse = await res.json(); // call json() as a function
+      console.log('succ', jsonResponse);
+    } else {
+      console.error('Request failed with status', res.status);
+    }
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+
+}
+//handle Close Availability modal
+const closeAvailabilitymodal=()=>{
+
+  setisAvailabilityModalOpen(false);
+}
+
+//handle save Availability modal
+const handleOnsave = (schedule) => {
+  console.log(schedule);
+
+  const bdy = {
+    availabilities: [schedule].map((item, index) => ({
+      dayOfWeek: index,
+      startTime: item.startTime,
+      endTime: item.endTime,
+      isAvailable: item.working
+    }))
+  };
+  
+  console.log('inside vd', bdy);
+
+  fetch('http://bonex.runasp.net/api/DoctorAvailability', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${user?.token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(bdy) // 🔥 Fix is here
+  })
+    .then((res) => {
+      if (!res.ok) {
+        console.error("Fetch failed with status:", res.status);
+      }
+      return res.json();
+    })
+    .then((data) => console.log('Success:', data))
+    .catch((err) => console.error('Error:', err));
+};
+
 
   // Appointment row component
   const AppointmentRow = ({ appointment }) => {
@@ -200,19 +286,30 @@ const HomePage = () => {
     };
   }, []);
 
+  useEffect(() => {
+fetch('http://bonex.runasp.net/Appointments?includePast=true',{
+  authorization: `Bearer ${user?.token}`,
+})
+
+  },[])
   return (
     <>
       <div className="homebody">
         <div
-          className={`doctorh-card animate__animated animate__backInUp ${user.gender === 1 ? 'male' : 'female'}`}
+          className={`doctorh-card animate__animated animate__backInUp ${user?.gender === 1 ? 'male' : 'female'}`}
         >
           <div className="docinfo animate__animated animate__jackInTheBox animate__delay-1s">
             <p className="greeting">Welcome back, Have a nice day at work!</p>
-            <h1 className="DoctorName">Dr. John Smith</h1>
+            <h1 className="DoctorName">Dr.{user?.firstName}</h1>
             <p className="specialities">MD, DM (Internal Medicine), FACP</p>
             <h2 className="todaysApp">
               You have total <span>10 Appointments</span> today!
             </h2>
+            <button className='w-[200px] h-[50px] p-3 bg-[#37B7C3] transition hover:bg-[#2661a8]'
+            style={{borderRadius:'15px',marginTop:'20px'}}
+            onClick={()=>setisAvailabilityModalOpen(true)}
+            
+            >Edit Availability</button>
           </div>
           <img
             src={user.gender === 1 ? maleavatar : femaleavatar}
@@ -485,6 +582,7 @@ const HomePage = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <AvailabilityModal open={isAvailabilityModalOpen} onClose={closeAvailabilitymodal} onSave={handleOnsave} />
       </div>
     </>
   );

@@ -10,7 +10,6 @@ import ReviewsComponent from "./components/reviewscmp.js";
 import ClinicCard from "./components/ClinicCard.js";
 import Caroselv1 from "./components/caroselv1.js";
 import "./Home.css";
-
 const Homev1 = () => {
   const reviewsData = [
     {
@@ -184,12 +183,13 @@ const Homev1 = () => {
       <br />
       <ClinicCard />
       <br />
-
+      <div id='doctor-home'>
       <DoctorsHomev1 />
-
+      </div>
 
       <br />
       <ReviewsComponent />
+      
     </div>
   );
 };
