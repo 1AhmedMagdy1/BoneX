@@ -14,7 +14,7 @@ const AcademicDetails = () => {
   const [degreeCertificate, setDegreeCertificate] = useState(null);
   const [postGradCertificate, setPostGradCertificate] = useState(null);
   const [speciality, setSpeciality] = useState("");
-  
+  const [medRegNumber, setMedRegNumber] = useState("");
   const [errors, setErrors] = useState({});
 
   // File change handlers
@@ -104,7 +104,9 @@ const AcademicDetails = () => {
     if (!speciality) {
       formErrors.speciality = "Please select a speciality";
     }
-   
+    if (!medRegNumber.trim()) {
+      formErrors.medRegNumber = "Medical Registration Number is required";
+    }
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
@@ -127,8 +129,8 @@ const AcademicDetails = () => {
       gradYear,
       degreeCertificate: degreeCertificate ? degreeCertificate.name : null,
       postGradCertificate: postGradCertificate ? postGradCertificate.name : null,
-      speciality
-      
+      speciality,
+      medRegNumber,
     };
     sessionStorage.setItem("academicData", JSON.stringify(academicData));
 
@@ -209,14 +211,14 @@ const AcademicDetails = () => {
 
           <div className="form-row">
             <label htmlFor="degreeCertificate">Degree Certificate</label>
-            
+            <div className="pstd">
               <input
                 type="file"
                 id="degreeCertificate"
                 onChange={handleDegreeFileChange}
               />
-              
-            
+              <span>Max Size is 5MB</span>
+            </div>
             {errors.degreeCertificate && (
               <span className="error">{errors.degreeCertificate}</span>
             )}
@@ -224,13 +226,14 @@ const AcademicDetails = () => {
 
           <div className="form-row">
             <label htmlFor="postGradCertificate">Postgraduate (if any)</label>
-            
+            <div className="pstd">
               <input
                 type="file"
                 id="postGradCertificate"
                 onChange={handlePostGradFileChange}
               />
-            
+              <span>Max Size is 5MB</span>
+            </div>
             {errors.postGradCertificate && (
               <span className="error">{errors.postGradCertificate}</span>
             )}
@@ -258,7 +261,19 @@ const AcademicDetails = () => {
             )}
           </div>
 
-          
+          <div className="form-row">
+            <label htmlFor="medRegNumber">Medical Registration Number</label>
+            <input
+              type="text"
+              id="medRegNumber"
+              placeholder="Fill your Medical Registration Number"
+              value={medRegNumber}
+              onChange={(e) => setMedRegNumber(e.target.value)}
+            />
+            {errors.medRegNumber && (
+              <span className="error">{errors.medRegNumber}</span>
+            )}
+          </div>
 
           <button type="submit" className="submit-btn">
             Submit &amp; Continue

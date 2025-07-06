@@ -38,7 +38,7 @@ const handleClose = () => setIsModalOpen(false);
         className="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-2 border-gray-200"
       />
       <div className="text-center flex-grow">
-        <h3 className="text-lg font-semibold text-blue-700">{doctor.fullName}</h3>
+        <h3 className="text-lg font-semibold text-black-700">{doctor.fullName}</h3>
         <p className="text-sm text-gray-600">{doctor.speciality}</p>
         <div className="flex items-center justify-center mt-2">
           {renderStars()}

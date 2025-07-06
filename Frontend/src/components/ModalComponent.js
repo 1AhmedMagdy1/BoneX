@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+
+import { DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 import TextField from "@mui/material/TextField";
 import { ExclamationIcon } from "@heroicons/react/solid";
-import { da } from "date-fns/locale";
 
 function NotificationCard({ message, isError }) {
   return (
@@ -135,8 +136,8 @@ function ModalComponent(props) {
       try {
         console.log("token", token);
         console.log("doctor id", doctorid);
-
-        const response = await fetch("http://bonex.runasp.net/Appointments", {
+        console.log("combinedDateTime", combinedDateTime);
+        const response = await fetch("https://bonex.runasp.net/Appointments", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -145,12 +146,16 @@ function ModalComponent(props) {
           body: JSON.stringify({
             doctorId: doctorid,
             scheduledTime: combinedDateTime,
-            notes: notes,
+            
           }),
         });
 
         // If the response is ok, show success notification
         if (response.ok) {
+      
+          const responseData = await response.json();
+          console.log('res data',responseData);
+            sessionStorage.setItem('Appointment', JSON.stringify(responseData.value));
           // Wait for 3 seconds then exit the modal and clear the notification
           setNotificationMessage("Congrats, you have an Appointment");
           setTimeout(() => {

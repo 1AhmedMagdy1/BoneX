@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import img1 from "../images/ConsultAdoctor.jpg";
-
+import img2 from '../images/casourel.png'
 const Caroselv1 = () => {
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ const Caroselv1 = () => {
       }}
     >
       <img
-        src={img1}
+        src={img2}
         alt="Consult a doctor"
         className="animate__animated animate__fadeInLeft"
         style={{

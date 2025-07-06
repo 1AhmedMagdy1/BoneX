@@ -4,216 +4,291 @@ import maleavatar from "./images/MaleAvatar.png";
 import femaleavatar from "./images/FemaleAvatar1.png";
 import RechartsPieChart from './RechartsPieChart';
 import { Link } from 'react-router-dom';
-import { Modal, Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import {
+  Modal,
+  Box,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Snackbar,
+  Alert
+} from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
-import AvailabilityModal from './components/AvailabilityModal.js'
+import AvailabilityModal from './components/AvailabilityModal.js';
 import './main.css';
 
 const HomePage = () => {
-  const [user, setUser] = useState(JSON.parse(sessionStorage.getItem('userInfo')));
- const [isAvailabilityModalOpen ,setisAvailabilityModalOpen ]=useState(false);
-
-  // Appointments stored in state for updates
-  const [appointmentsData, setAppointmentsData] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      image: "https://randomuser.me/api/portraits/men/1.jpg",
-      date: "2025-02-20 10:00 AM to 11:00 AM",
-      gender: "Male",
-      dob: "1985-04-12",
-      type: "Clinic",
-      status: "Booked",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      image: "https://randomuser.me/api/portraits/women/2.jpg",
-      date: "2025-02-20 11:30 AM to 12:30 PM",
-      gender: "Female",
-      dob: "1990-08-25",
-      type: "Online",
-      status: "Completed",
-    },
-    {
-      id: 3,
-      name: "Robert Brown",
-      image: "https://randomuser.me/api/portraits/men/3.jpg",
-      date: "2025-02-20 02:00 PM to 03:00 PM",
-      gender: "Male",
-      dob: "1978-12-05",
-      type: "Clinic",
-      status: "Canceled",
-    },
-    {
-      id: 4,
-      name: "Michael Green",
-      image: "https://randomuser.me/api/portraits/men/4.jpg",
-      date: "2025-02-20 03:00 PM to 04:00 PM",
-      gender: "Male",
-      dob: "1992-06-15",
-      type: "Online",
-      status: "NoShow",
-    },
-    {
-      id: 5,
-      name: "Michael Green",
-      image: "https://randomuser.me/api/portraits/men/4.jpg",
-      date: "2025-02-20 03:00 PM to 04:00 PM",
-      gender: "Male",
-      dob: "1992-06-15",
-      type: "Online",
-      status: "FollowUp",
-    },
-    
-  ]);
-
-  // State for filtering appointments by status
+  const [user] = useState(JSON.parse(sessionStorage.getItem('userInfo')));
+  const [appointmentsList, setAppointmentsList] = useState([]);
+  const [formattedAppointments, setFormattedAppointments] = useState([]);
   const [statusFilter, setStatusFilter] = useState("");
-  // Derive filtered appointments based on the selected status
-  const filteredAppointments = appointmentsData.filter(appointment => {
-    return !statusFilter || appointment.status === statusFilter;
-  });
-
-  // State for cancellation confirmation dialog
   const [cancelingAppointment, setCancelingAppointment] = useState(null);
-
-  // State for editing appointment time dialog
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [editValue, setEditValue] = useState(dayjs());
+  const [isAvailabilityModalOpen, setIsAvailabilityModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Report states
+  const [reportingAppointment, setReportingAppointment] = useState(null);
+  const [diagnosis, setDiagnosis] = useState("");
+  const [medications, setMedications] = useState("");
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success"
+  });
 
-  // Open cancellation dialog
-  const handleOpenCancelDialog = (appointment) => {
-    setCancelingAppointment(appointment);
+  // Fetch real appointments once on mount
+  useEffect(() => {
+    fetch('https://bonex.runasp.net/Appointments?includePast=true', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${user?.token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(data => setAppointmentsList(data.value || []))
+      .catch(console.error);
+  }, [user?.token]);
+
+  // Shape incoming data for display
+  useEffect(() => {
+    setFormattedAppointments(
+      appointmentsList.map(item => {
+        const words = item.patientName.trim().split(/\s+/);
+        const displayName = words.length > 2
+          ? words.slice(0, 2).join(' ')
+          : item.patientName;
+
+        return {
+          id: item.id,
+          name: displayName,
+          fullName: item.patientName, // Store full name for reports
+          image: `https://bonex.runasp.net${item.patientPicture}`,
+          date: item.scheduledTime,
+          gender: item.patientGender === '1' ? 'Male' : 'Female',
+          dob: item.patientBirthDate,
+          type: item.type,
+          status: item.status
+        };
+      })
+    );
+  }, [appointmentsList]);
+
+  // Filtered view
+  const filteredAppointments = formattedAppointments
+    .filter(appt =>
+      appt.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter(appt =>
+      !statusFilter || appt.status === statusFilter
+    );
+
+  // === Calculate statistics ===
+  const calculateStatistics = () => {
+    const totalAppointments = formattedAppointments.length;
+    
+    // Count unique patients
+    const uniquePatients = new Set(
+      formattedAppointments.map(appt => appt.fullName.toLowerCase().trim())
+    ).size;
+    
+    // Count clinic and online consultations
+    const clinicConsulting = formattedAppointments.filter(appt => 
+      appt.type.toLowerCase() === 'clinic'
+    ).length;
+    
+    const onlineConsulting = formattedAppointments.filter(appt => 
+      appt.type.toLowerCase() === 'online'
+    ).length;
+    
+    // Count canceled appointments
+    const canceledAppointments = formattedAppointments.filter(appt => 
+      appt.status === 'Canceled'
+    ).length;
+    
+    // Calculate no-show rate
+    const noShowCount = formattedAppointments.filter(appt => 
+      appt.status === 'NoShow'
+    ).length;
+    
+    const noShowRate = totalAppointments > 0 
+      ? `${Math.round((noShowCount / totalAppointments) * 100)}%` 
+      : '0%';
+    
+    return {
+      totalAppointments,
+      uniquePatients,
+      clinicConsulting,
+      onlineConsulting,
+      canceledAppointments,
+      noShowRate,
+      // Placeholders for ratings and waiting time
+      consultationRatings: '0 / 5 ⭐',
+      averageWaitingTime: '0 min'
+    };
   };
 
-  // Confirm cancellation: update status and close dialog
+  const statistics = calculateStatistics();
+
+  // === Cancellation handlers ===
+  const handleOpenCancelDialog = appt => setCancelingAppointment(appt);
   const handleConfirmCancel = () => {
-    if (cancelingAppointment) {
-      setAppointmentsData(prev =>
-        prev.map(appt =>
-          appt.id === cancelingAppointment.id ? { ...appt, status: "Canceled" } : appt
-        )
-      );
-      setCancelingAppointment(null);
-    }
-  };
-
-  // Close cancellation dialog
-  const handleCloseCancelDialog = () => {
+    setFormattedAppointments(prev =>
+      prev.map(appt =>
+        appt.id === cancelingAppointment.id
+          ? { ...appt, status: "Canceled" }
+          : appt
+      )
+    );
     setCancelingAppointment(null);
   };
+  const handleCloseCancelDialog = () => setCancelingAppointment(null);
 
-  // Open edit dialog; prefill with appointment's start time
-  const handleInitiateEdit = (appointment) => {
-    setEditingAppointment(appointment);
-    const startTime = appointment.date.split(" to ")[0]; // e.g., "2025-02-20 10:00 AM"
-    setEditValue(dayjs(startTime));
+  // === Edit-time handlers ===
+  const handleInitiateEdit = appt => {
+    setEditingAppointment(appt);
+    const start = appt.date.split(" to ")[0];
+    setEditValue(dayjs(start));
+  };
+  const handleSaveEdit = () => {
+    const newStart = editValue.format('YYYY-MM-DD hh:mm A');
+    setFormattedAppointments(prev =>
+      prev.map(appt =>
+        appt.id === editingAppointment.id
+          ? {
+              ...appt,
+              date: appt.date.includes(" to ")
+                ? `${newStart} to ${appt.date.split(" to ")[1]}`
+                : newStart
+            }
+          : appt
+      )
+    );
+    setEditingAppointment(null);
+  };
+  const handleCancelEdit = () => setEditingAppointment(null);
+
+  // === Report handlers ===
+  const handleInitiateReport = (appt) => {
+    setReportingAppointment(appt);
+    setDiagnosis("");
+    setMedications("");
   };
 
-  // Save the edited time and update the appointment
-  const handleSaveEdit = () => {
-    if (editingAppointment) {
-      const newTime = editValue.format('YYYY-MM-DD hh:mm A');
-      let newDateString = newTime;
-      if (editingAppointment.date.includes(" to ")) {
-        const parts = editingAppointment.date.split(" to ");
-        newDateString = `${newTime} to ${parts[1]}`;
+  const handleCloseReportModal = () => {
+    setReportingAppointment(null);
+  };
+
+  const handleSubmitReport = async () => {
+    if (!reportingAppointment) return;
+
+    const reportData = {
+      appointmentId: reportingAppointment.id,
+      patientName: reportingAppointment.fullName,
+      diagnosis,
+      medications
+    };
+
+    try {
+      const response = await fetch('https://bonex.runasp.net/Appointments/report', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${user?.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reportData)
+      });
+
+      if (response.ok) {
+        setNotification({
+          open: true,
+          message: "Report submitted successfully!",
+          severity: "success"
+        });
+        setTimeout(() => setNotification({ ...notification, open: false }), 3000);
+        handleCloseReportModal();
+      } else {
+        throw new Error('Failed to submit report');
       }
-      setAppointmentsData(prev =>
-        prev.map(appt =>
-          appt.id === editingAppointment.id ? { ...appt, date: newDateString } : appt
-        )
-      );
-      setEditingAppointment(null);
+    } catch (error) {
+      setNotification({
+        open: true,
+        message: "Error submitting report. Please try again.",
+        severity: "error"
+      });
+      console.error(error);
     }
   };
 
-  // Cancel editing and close the edit dialog
-  const handleCancelEdit = () => {
-    setEditingAppointment(null);
-  };
+  // === Availability modal handlers ===
+  const closeAvailabilityModal = () => setIsAvailabilityModalOpen(false);
+  const handleOnSaveAvailability = (scheduleData) => {
+    const scheduleArray = Array.isArray(scheduleData) 
+      ? scheduleData 
+      : Object.values(scheduleData);
 
-const assignDoctorAvailability=async (schedule)=>{
-console.log('insude');
-
-// Ensure this code is within an async function
-for (let i = 0; i < schedule.length; i++){
-  const bdy = {
-    dayOfWeek: i,
-    startTime: schedule[i].startTime,
-    endTime: schedule[i].endTime,
-    isAvailable: schedule[i].working
-  };
-  console.log('insude vd',bdy);
-  try {
-    const res = await fetch('http://bonex.runasp.net/api/DoctorAvailability', {
+    const availabilitiesArray = [];
+    scheduleArray.forEach((item, idx) => {
+      availabilitiesArray.push({
+        dayOfWeek: idx+1,
+        startTime: item.startTime,
+        endTime: item.endTime,
+        isAvailable: item.working
+      });
+    });
+    
+    const bdy = { availabilities: availabilitiesArray };
+    
+    fetch('https://bonex.runasp.net/DoctorAvailability', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${user?.token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(bdy)
-    });
-    
-    if (res.ok) {
-      const jsonResponse = await res.json(); // call json() as a function
-      console.log('succ', jsonResponse);
-    } else {
-      console.error('Request failed with status', res.status);
-    }
-  } catch(error) {
-    console.error(error);
-  }
-}
-
-
-}
-//handle Close Availability modal
-const closeAvailabilitymodal=()=>{
-
-  setisAvailabilityModalOpen(false);
-}
-
-//handle save Availability modal
-const handleOnsave = (schedule) => {
-  console.log(schedule);
-
-  const bdy = {
-    availabilities: [schedule].map((item, index) => ({
-      dayOfWeek: index,
-      startTime: item.startTime,
-      endTime: item.endTime,
-      isAvailable: item.working
-    }))
-  };
-  
-  console.log('inside vd', bdy);
-
-  fetch('http://bonex.runasp.net/api/DoctorAvailability', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${user?.token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(bdy) // 🔥 Fix is here
-  })
-    .then((res) => {
-      if (!res.ok) {
-        console.error("Fetch failed with status:", res.status);
-      }
-      return res.json();
     })
-    .then((data) => console.log('Success:', data))
-    .catch((err) => console.error('Error:', err));
-};
+      .then(res => res.ok ? res.json() : Promise.reject(res.status))
+      .then(console.log)
+      .catch(console.error);
+  };
 
+  // Dropdown toggle logic
+  React.useEffect(() => {
+    const handler = e => {
+      const toggle = e.target.closest(".dropdown-toggle");
+      document.querySelectorAll(".dropdown-menu.show")
+        .forEach(menu => {
+          if (!toggle || menu !== toggle.nextElementSibling) {
+            menu.classList.remove("show");
+          }
+        });
+      if (toggle) {
+        e.stopPropagation();
+        toggle.nextElementSibling.classList.toggle("show");
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
 
-  // Appointment row component
+  // Single appointment row with conditional report option
   const AppointmentRow = ({ appointment }) => {
+    // Check if appointment time has passed
+    const now = dayjs();
+    const timeParts = appointment.date.split(' to ');
+    const startTimeStr = timeParts[0].trim();
+    const startTime = dayjs(startTimeStr);
+    const isPastAppointment = startTime.isBefore(now);
+
     return (
       <tr>
         <td>
@@ -223,11 +298,11 @@ const handleOnsave = (schedule) => {
           </div>
         </td>
         <td>{appointment.date}</td>
-        <td>{appointment.gender}</td>
+        <td>{ appointment.name==="Emad Khalid"?"Male": appointment.gender}</td>
         <td>{appointment.dob}</td>
         <td>{appointment.type}</td>
         <td>
-          <span className={`status status-${appointment.status.toLowerCase()}`}>
+          <span className={`status status-${appointment.status.toLowerCase() === 'scheduled' ? 'booked' : appointment.status.toLowerCase()}`}>
             {appointment.status}
           </span>
         </td>
@@ -236,28 +311,39 @@ const handleOnsave = (schedule) => {
             <i className="fas fa-ellipsis-h dropdown-toggle" title="Actions"></i>
             <div className="dropdown-menu">
               <Link to="#" className="dropdown-item">
-                <i className="fas fa-comment-dots"></i>Message Patient
+                <i className="fas fa-comment-dots"></i> Message Patient
               </Link>
-              <a href="#" className="dropdown-item">
-                <i className="fas fa-info-circle"></i>View More Details
-              </a>
+              <Link to="#" className="dropdown-item">
+                <i className="fas fa-info-circle"></i> View More Details
+              </Link>
               <a
                 href="#"
                 className="dropdown-item"
                 onClick={() => handleOpenCancelDialog(appointment)}
               >
-                <i className="fas fa-times"></i>Cancel Appointment
+                <i className="fas fa-times"></i> Cancel Appointment
               </a>
               <a
                 href="#"
                 className="dropdown-item"
                 onClick={() => handleInitiateEdit(appointment)}
               >
-                <i className="fas fa-edit"></i>Edit Time
+                <i className="fas fa-edit"></i> Edit Time
               </a>
-              <Link to={'/meet'} className="dropdown-item">
-                <li className="material-icons">video_call</li>
-                Start Video Call
+              
+              {/* Conditionally show Write Report option */}
+              
+                <a
+                  href="#"
+                  className="dropdown-item"
+                  onClick={() => handleInitiateReport(appointment)}
+                >
+                  <i className="fas fa-file-medical"></i> Write Report
+                </a>
+              
+              
+              <Link to="/meet" className="dropdown-item">
+                <li className="material-icons">video_call</li> Start Video Call
               </Link>
             </div>
           </div>
@@ -266,32 +352,6 @@ const handleOnsave = (schedule) => {
     );
   };
 
-  // Dropdown toggle logic
-  useEffect(() => {
-    const handleClick = (event) => {
-      const isToggle = event.target.closest(".dropdown-toggle");
-      document.querySelectorAll(".dropdown-menu.show").forEach((menu) => {
-        if (!isToggle || menu !== isToggle.nextElementSibling) {
-          menu.classList.remove("show");
-        }
-      });
-      if (isToggle) {
-        event.stopPropagation();
-        isToggle.nextElementSibling.classList.toggle("show");
-      }
-    };
-    document.addEventListener("click", handleClick);
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  }, []);
-
-  useEffect(() => {
-fetch('http://bonex.runasp.net/Appointments?includePast=true',{
-  authorization: `Bearer ${user?.token}`,
-})
-
-  },[])
   return (
     <>
       <div className="homebody">
@@ -303,17 +363,19 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
             <h1 className="DoctorName">Dr.{user?.firstName}</h1>
             <p className="specialities">MD, DM (Internal Medicine), FACP</p>
             <h2 className="todaysApp">
-              You have total <span>10 Appointments</span> today!
+              You have total <span>{formattedAppointments.length} Appointments</span> today!
             </h2>
-            <button className='w-[200px] h-[50px] p-3 bg-[#37B7C3] transition hover:bg-[#2661a8]'
-            style={{borderRadius:'15px',marginTop:'20px'}}
-            onClick={()=>setisAvailabilityModalOpen(true)}
-            
-            >Edit Availability</button>
+            <button
+              className='w-[200px] h-[50px] p-3 bg-[#37B7C3] transition hover:bg-[#2661a8]'
+              style={{ borderRadius: '15px', marginTop: '20px' }}
+              onClick={() => setIsAvailabilityModalOpen(true)}
+            >
+              Edit Availability
+            </button>
           </div>
           <img
             src={user.gender === 1 ? maleavatar : femaleavatar}
-            alt={`${user.gender === 1 ? 'male' : 'female'} Doctor Avatar`}
+            alt="Doctor Avatar"
             className="animate__animated animate__backInRight animate__delay-1s"
           />
         </div>
@@ -338,7 +400,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">calendar_today</span>
                 </div>
                 <div>
-                  <h3>250</h3>
+                  <h3>{statistics.totalAppointments}</h3>
                   <p>Appointments</p>
                 </div>
               </div>
@@ -347,7 +409,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">person</span>
                 </div>
                 <div>
-                  <h3>250</h3>
+                  <h3>{statistics.uniquePatients}</h3>
                   <p>Total Patients</p>
                 </div>
               </div>
@@ -356,7 +418,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">medical_services</span>
                 </div>
                 <div>
-                  <h3>150</h3>
+                  <h3>{statistics.clinicConsulting}</h3>
                   <p>Clinic Consulting</p>
                 </div>
               </div>
@@ -365,8 +427,8 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">videocam</span>
                 </div>
                 <div>
-                  <h3>100</h3>
-                  <p>online Consulting</p>
+                  <h3>{statistics.onlineConsulting}</h3>
+                  <p>Online Consulting</p>
                 </div>
               </div>
             </div>
@@ -377,7 +439,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">event_busy</span>
                 </div>
                 <div>
-                  <h3>5%</h3>
+                  <h3>{statistics.noShowRate}</h3>
                   <p>No-Show Rates</p>
                 </div>
               </div>
@@ -386,7 +448,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">cancel</span>
                 </div>
                 <div>
-                  <h3>10</h3>
+                  <h3>{statistics.canceledAppointments}</h3>
                   <p>Canceled Appointments</p>
                 </div>
               </div>
@@ -395,7 +457,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">star</span>
                 </div>
                 <div>
-                  <h3>4.8 / 5 ⭐</h3>
+                  <h3>{statistics.consultationRatings}</h3>
                   <p>Consultation Ratings</p>
                 </div>
               </div>
@@ -404,7 +466,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   <span className="material-icons">schedule</span>
                 </div>
                 <div>
-                  <h3>12 min</h3>
+                  <h3>{statistics.averageWaitingTime}</h3>
                   <p>Average Waiting Time</p>
                 </div>
               </div>
@@ -413,7 +475,6 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
           <RechartsPieChart />
         </div>
 
-        {/* Schedule List */}
         <div className="schedule-section">
           <div style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <span
@@ -429,8 +490,14 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
             <div className="search-filter-wrapper">
               <div className="search-bar">
                 <i className="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Search Appointment, Patient or etc" />
+                <input
+                  type="text"
+                  placeholder="Search Appointment, Patient or etc"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
               </div>
+
               <div className="filter-dropdown">
                 <label htmlFor="appointment-status" className="filter-label">Filter By</label>
                 <select
@@ -440,7 +507,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
                   <option value="">All Statuses</option>
-                  <option value="Booked">Booked</option>
+                  <option value="Scheduled">Booked</option>
                   <option value="Completed">Completed</option>
                   <option value="Canceled">Canceled</option>
                   <option value="NoShow">No Show</option>
@@ -462,15 +529,15 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                 </tr>
               </thead>
               <tbody>
-                {filteredAppointments.map((appointment) => (
-                  <AppointmentRow key={appointment.id} appointment={appointment} />
+                {filteredAppointments.map(appt => (
+                  <AppointmentRow key={appt.id} appointment={appt} />
                 ))}
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Modal for editing appointment time */}
+        {/* Edit-time Modal */}
         <Modal
           open={Boolean(editingAppointment)}
           onClose={handleCancelEdit}
@@ -518,13 +585,7 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
                 )}
               />
             </LocalizationProvider>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                mt: 3,
-              }}
-            >
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
               <Button onClick={handleSaveEdit} variant="contained" color="primary" sx={{ mr: 2 }}>
                 Save
               </Button>
@@ -535,45 +596,21 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
           </Box>
         </Modal>
 
-        {/* MUI Dialog for cancellation confirmation */}
+        {/* Cancel-confirmation Dialog */}
         <Dialog 
           open={Boolean(cancelingAppointment)} 
           onClose={handleCloseCancelDialog}
           fullWidth
           maxWidth="xs"
-          PaperProps={{
-            sx: {
-              borderRadius: 4,
-              boxShadow: 24,
-            },
-          }}
+          PaperProps={{ sx: { borderRadius: 4, boxShadow: 24 } }}
         >
-          <DialogTitle
-            sx={{
-              backgroundColor: 'error.main',
-              color: 'white',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              py: 2,
-            }}
-          >
+          <DialogTitle sx={{ backgroundColor: 'error.main', color: 'white', textAlign: 'center', fontWeight: 'bold', py: 2 }}>
             Cancel Appointment
           </DialogTitle>
-          <DialogContent
-            sx={{
-              textAlign: 'center',
-              py: 3,
-              fontSize: '1rem',
-            }}
-          >
+          <DialogContent sx={{ textAlign: 'center', py: 3, fontSize: '1rem' }}>
             Are you sure you want to cancel this appointment?
           </DialogContent>
-          <DialogActions
-            sx={{
-              justifyContent: 'center',
-              pb: 2,
-            }}
-          >
+          <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
             <Button onClick={handleConfirmCancel} variant="contained" color="error" sx={{ mr: 2 }}>
               Yes
             </Button>
@@ -582,7 +619,120 @@ fetch('http://bonex.runasp.net/Appointments?includePast=true',{
             </Button>
           </DialogActions>
         </Dialog>
-        <AvailabilityModal open={isAvailabilityModalOpen} onClose={closeAvailabilitymodal} onSave={handleOnsave} />
+
+        {/* Report Modal */}
+        <Modal
+          open={Boolean(reportingAppointment)}
+          onClose={handleCloseReportModal}
+          aria-labelledby="report-modal-title"
+        >
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 500,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2
+          }}>
+            <Typography 
+              id="report-modal-title" 
+              variant="h5" 
+              component="h2"
+              gutterBottom
+              sx={{ 
+                fontWeight: 'bold', 
+                color: '#1976d2',
+                mb: 3,
+                textAlign: 'center'
+              }}
+            >
+              Medical Report for {reportingAppointment?.fullName}
+            </Typography>
+            
+            <TextField
+              label="Diagnosis"
+              fullWidth
+              multiline
+              rows={4}
+              value={diagnosis}
+              onChange={(e) => setDiagnosis(e.target.value)}
+              margin="normal"
+              variant="outlined"
+              InputProps={{
+                sx: { borderRadius: 2 }
+              }}
+            />
+            
+            <TextField
+              label="Medications"
+              fullWidth
+              multiline
+              rows={4}
+              value={medications}
+              onChange={(e) => setMedications(e.target.value)}
+              margin="normal"
+              variant="outlined"
+              InputProps={{
+                sx: { borderRadius: 2 }
+              }}
+            />
+            
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'flex-end', 
+              mt: 3,
+              gap: 2
+            }}>
+              <Button 
+                onClick={handleCloseReportModal} 
+                variant="outlined"
+                sx={{ 
+                  px: 3,
+                  py: 1,
+                  borderRadius: 2
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="contained" 
+                onClick={handleSubmitReport}
+                color="primary"
+                sx={{ 
+                  px: 3,
+                  py: 1,
+                  borderRadius: 2
+                }}
+              >
+                Submit Report
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
+
+        {/* Notification Snackbar */}
+        <Snackbar
+          open={notification.open}
+          autoHideDuration={3000}
+          onClose={() => setNotification({ ...notification, open: false })}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert 
+            severity={notification.severity}
+            sx={{ width: '100%', fontSize: '1rem' }}
+          >
+            {notification.message}
+          </Alert>
+        </Snackbar>
+
+        <AvailabilityModal
+          open={isAvailabilityModalOpen}
+          onClose={closeAvailabilityModal}
+          onSave={handleOnSaveAvailability}
+        />
       </div>
     </>
   );

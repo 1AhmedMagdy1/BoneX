@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import './doctorProfile.css'
 import cer1 from './images/cer1.jpg'
+import { useNavigate } from 'react-router-dom'
 import MapComponent from './components/MapComponent '
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import ModalComponent from './components/ModalComponent'
+import './doctorProfile.css'
 const DoctorProfile = () => {
   const [user,setuser]=useState(JSON.parse(sessionStorage.getItem('userInfo')))
   const [doctor,setdoctor]=useState(null)
-
-
+ const[isopen,setisopen]=useState(false)
+const navigate=useNavigate();
   const params=useParams();
 
-const degreeurl='http://bonex.runasp.net'+doctor?.degreeCertificate;
-const postgradurl='http://bonex.runasp.net'+doctor?.additionalCertification;
-const profilepic='http://bonex.runasp.net'+doctor?.profilePicture;
+const degreeurl='https://bonex.runasp.net'+doctor?.degreeCertificate;
+const postgradurl='https://bonex.runasp.net'+doctor?.additionalCertification;
+const profilepic='https://bonex.runasp.net'+doctor?.profilePicture;
+const handlebook=()=>{setisopen(true)}
+const handleClose=()=>{setisopen(false)}
 
 useEffect(() => {
     console.log(params.id);
 
-    fetch(`http://bonex.runasp.net/Doctor/profile/${params.id}`, {
+    fetch(`https://bonex.runasp.net/Doctor/profile/${params.id}`, {
       headers: {
         'authorization': `Bearer ${user.token}`
       }
@@ -28,6 +32,11 @@ useEffect(() => {
       .catch((error) => console.error('Error fetching doctor data:', error));
   }, []); 
   
+const handleMessageDoctor=()=>{
+sessionStorage.setItem('doctorId',doctor?.id);
+navigate('/chat');
+}
+
   return (
 
     <div class="doctorProfilecontainer">
@@ -44,22 +53,27 @@ useEffect(() => {
       </div>
     </div>
   </div>
+<>
 
- 
+
+</>
+{/* 
   <button class="edit-profile-btn" onclick="openModal()"  hidden={user.role === 'patient'}>Edit Profile</button>
-
+*/}
  
   <section id="overview">
     <h3 class="section-title">Brief About the Doctor</h3>
     <p id="docBio">
     {doctor?.brief}
     </p>
+    {
     <div class="actions">
-      <button className="book-btn" hidden={user.role === 'Doctor'}>Book Appointment</button>
-      <button class="msg-btn"   hidden={user.role === 'Doctor'}>Message Doctor</button>
+      <button className="book-btn" hidden={user.role === 'Doctor'} onClick={handlebook}>Book Appointment</button>
+      <button class="msg-btn"   hidden={user.role === 'Doctor'} onClick={handleMessageDoctor}> Message Doctor </button>
     </div>
+    }
   </section>
-
+{isopen&&(<ModalComponent  isopen={isopen} handleClose={handleClose} doctorid={doctor?.id} />)}
 
   <section id="education">
     <h3 class="section-title">Education & Qualifications</h3>

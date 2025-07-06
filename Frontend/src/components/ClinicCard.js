@@ -1,7 +1,11 @@
 import React from 'react';
 import doctoravt from "../images/professional-male-doctor.jpg";
-
+import { useNavigate } from 'react-router-dom';
 const ClinicCard = () => {
+  const navigate = useNavigate();
+  const handleFindClinicClick = () => {
+    navigate('/doctorsv1');
+  }
   return (
     
    <div className="flex flex-col md:flex-row  bg-gray-50 mx-auto rounded-lg shadow-md" style={{width: '90%', height: '500px'}}>
@@ -25,7 +29,7 @@ const ClinicCard = () => {
   Find a GP clinic close to you today.
 </p>
 
-    <button className="bg-[#071952] hover:bg-[#0B2C78] text-white  py-3 px-6  mt-4 " style={{borderRadius:'20px',marginLeft:'165px',fontSize:'1.2rem',fontWeight:'500'}}>Find a Clinic</button>
+    <button className="bg-[#071952] hover:bg-[#0B2C78] text-white  py-3 px-6  mt-4 " style={{borderRadius:'20px',marginLeft:'165px',fontSize:'1.2rem',fontWeight:'500'}} onClick={handleFindClinicClick}>Find a Clinic</button>
   </div>
   <div className="md:w-2/4">
     <img src={doctoravt} alt="Clinic location illustration" className="w-full h-full object-fit rounded-r-lg" />

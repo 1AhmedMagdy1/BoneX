@@ -1,217 +1,375 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function IdentityVerification() {
   // Refs & States
   const videoRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const [recording, setRecording] = useState(false);
+  const canvasRef = useRef(null);
+  const [capturing, setCapturing] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [videoURL, setVideoURL] = useState(null);
+  const [photoURL, setPhotoURL] = useState(null);
   const [error, setError] = useState(null);
-  const [timer, setTimer] = useState(5);
-  const [intervalId, setIntervalId] = useState(null);
   const [apiMessage, setApiMessage] = useState('');
   const [faceDetected, setFaceDetected] = useState(false);
   const [processingProgress, setProcessingProgress] = useState(0);
   const [instructionVisible, setInstructionVisible] = useState(true);
+  const [referenceFile, setReferenceFile] = useState(null);
+  const [cameraActive, setCameraActive] = useState(false);
+  const streamRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Cleanup any interval on unmount
+  // Retrieve user ID & profile picture path from sessionStorage
+  const userInfo = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+  const id = userInfo.id;
+  const referencePath = userInfo.profilePicture;
+
+  // Helper function to convert any image blob to JPG format
+  const convertToJpg = (blob) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        // Fill white background (important for transparent images)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw the image
+        ctx.drawImage(img, 0, 0);
+        
+        // Convert to JPG blob
+        canvas.toBlob((jpgBlob) => {
+          if (jpgBlob) {
+            resolve(jpgBlob);
+          } else {
+            reject(new Error('Failed to convert image to JPG'));
+          }
+        }, 'image/jpeg', 0.95);
+      };
+      
+      img.onerror = () => reject(new Error('Failed to load image for conversion'));
+      img.src = URL.createObjectURL(blob);
+    });
+  };
+
   useEffect(() => {
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [intervalId]);
+    if (!id || !referencePath) {
+      setError('User info or profile picture not found in sessionStorage.');
+      return;
+    }
 
-  const startRecording = async () => {
+    // Fetch reference image blob and convert to JPG
+    (async () => {
+      try {
+        const resp = await fetch(
+          `https://bonex.runasp.net/me/profile-picture/${id}`
+        );
+        if (!resp.ok) throw new Error(`Status ${resp.status}`);
+        
+        const originalBlob = await resp.blob();
+        
+        // Convert to JPG format
+        const jpgBlob = await convertToJpg(originalBlob);
+        
+        // Create file with proper JPG extension
+        const file = new File([jpgBlob], `profile-${id}.jpg`, {
+          type: 'image/jpeg',
+        });
+        
+        setReferenceFile(file);
+        console.log('Reference image loaded and converted to JPG:', file.name, file.type);
+      } catch (e) {
+        console.error('Failed to download/convert reference image', e);
+        setError('Failed to load reference image.');
+      }
+    })();
+    
+    // Start camera automatically
+    startCamera();
+    
+    // Cleanup stream on unmount
+    return () => {
+      stopCamera();
+    };
+  }, [id, referencePath]);
+
+  const startCamera = async () => {
     try {
       setError(null);
-      setApiMessage('');
-      setVideoURL(null);
-      setFaceDetected(false);
-      setInstructionVisible(false);
+      setInstructionVisible(true);
+      
+      // Stop any existing stream
+      if (streamRef.current) {
+        stopCamera();
+      }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      // Get camera stream
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'user', 
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      
+      streamRef.current = stream;
       videoRef.current.srcObject = stream;
-
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      let chunks = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        chunks.push(event.data);
-      };
-
-      mediaRecorder.onstop = async () => {
-        clearInterval(intervalId);
-        setTimer(5);
-        const blob = new Blob(chunks, { type: 'video/mp4' });
-        const url = URL.createObjectURL(blob);
-        setVideoURL(url);
-
-        await processVideo(blob);
-      };
-
-      mediaRecorder.start();
-      setRecording(true);
-
-      // Simulate real-time face detection after 2 seconds
-      setTimeout(() => {
-        setFaceDetected(true);
-      }, 2000);
-
-      // Start countdown timer
-      const id = setInterval(() => {
-        setTimer((prev) => {
-          if (prev <= 1) {
-            clearInterval(id);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      setIntervalId(id);
-
-      // Stop recording after 5 seconds
-      setTimeout(() => {
-        mediaRecorder.stop();
-        stream.getTracks().forEach((track) => track.stop());
-        setRecording(false);
-      }, 5000);
+      setCameraActive(true);
+      
+      // Ensure video plays
+      videoRef.current.play().catch(err => {
+        console.error('Video play error:', err);
+        setError('Could not start camera feed. Please try again.');
+      });
     } catch (err) {
-      console.error(err);
-      setError("Could not access the camera. Please check your permissions.");
+      console.error('Camera error:', err);
+      setError('Could not access the camera. Please check your permissions and try again.');
+      setCameraActive(false);
     }
   };
 
-  const processVideo = async (blob) => {
-    setProcessing(true);
-    setProcessingProgress(0);
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 5;
-      if (progress >= 100) {
-        progress = 100;
-        clearInterval(interval);
-      }
-      setProcessingProgress(progress);
-    }, 150);
-
-    // Simulate processing delay
-    setTimeout(() => {
-      setProcessing(false);
-      setApiMessage("Identity verified successfully!");
-    }, 3000);
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setCameraActive(false);
   };
 
-  const resetRecording = () => {
-    setVideoURL(null);
+  const capturePhoto = async () => {
+    if (!cameraActive) {
+      setError('Camera is not active. Please start the camera first.');
+      return;
+    }
+    
+    if (!referenceFile) {
+      setError('Reference image not loaded yet.');
+      return;
+    }
+
+    try {
+      setError(null);
+      setApiMessage('');
+      setPhotoURL(null);
+      setFaceDetected(false);
+      setInstructionVisible(false);
+      setCapturing(true);
+
+      // Capture photo immediately
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      
+      if (!video.videoWidth || !video.videoHeight) {
+        throw new Error('Camera feed is not ready');
+      }
+      
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      
+      // Fill white background
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw video frame
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Convert to JPG blob with high quality
+      canvas.toBlob(async (jpgBlob) => {
+        if (!jpgBlob) {
+          throw new Error('Failed to capture photo as JPG');
+        }
+        
+        // Create file with JPG extension
+        const capturedFile = new File([jpgBlob], `captured-${Date.now()}.jpg`, {
+          type: 'image/jpeg',
+        });
+        
+        console.log('Photo captured as JPG:', capturedFile.name, capturedFile.type);
+        
+        const url = URL.createObjectURL(jpgBlob);
+        setPhotoURL(url);
+        setCapturing(false);
+        setFaceDetected(true);
+        
+        await processPhoto(capturedFile);
+      }, 'image/jpeg', 0.95); // High quality JPG
+    } catch (err) {
+      console.error('Capture error:', err);
+      setError(err.message || 'Error capturing photo');
+      setCapturing(false);
+    }
+  };
+
+  const processPhoto = async (capturedFile) => {
+    try {
+      setProcessing(true);
+      setProcessingProgress(0);
+
+      // Simulate progress
+      const progId = setInterval(() => {
+        setProcessingProgress((p) => {
+          const next = p + 5;
+          if (next >= 100) {
+            clearInterval(progId);
+            return 100;
+          }
+          return next;
+        });
+      }, 150);
+
+      // Prepare FormData with proper JPG files
+      const form = new FormData();
+      form.append('Image1', referenceFile);  // Reference JPG file
+      form.append('Image2', capturedFile);   // Captured JPG file
+
+      console.log('Sending files:', {
+        reference: referenceFile.name,
+        referenceType: referenceFile.type,
+        captured: capturedFile.name,
+        capturedType: capturedFile.type
+      });
+
+      // Call verification API
+      const resp = await fetch(
+        'https://bonex.runasp.net/Face/verify',
+        {
+          method: 'POST',
+          body: form,
+        }
+      );
+      
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error('API error:', resp.status, errorText);
+        throw new Error(`API error: ${resp.status} - ${errorText}`);
+      }
+      
+      const result = await resp.json();
+
+      // Brief delay at 100%
+      setTimeout(() => {
+        console.log('Verification result:', result);
+        if (result.match === false) {
+          console.log('Face does not match the original image');
+          setApiMessage(result.message || 'Face does not match the original image!');
+        } else {
+          navigate('/homed');
+        }
+        setProcessing(false);
+      }, 1000);
+    } catch (e) {
+      console.error('Processing error:', e);
+      setError(e.message || 'Failed to send images to server.');
+      setProcessing(false);
+    }
+  };
+
+  const resetCapture = () => {
+    setPhotoURL(null);
     setError(null);
-    setTimer(5);
     setApiMessage('');
     setFaceDetected(false);
     setInstructionVisible(true);
+    startCamera();
   };
 
   return (
     <>
-      {/* Hardcoded keyframe animations */}
       <style>{`
-        @keyframes fadeIn {
-          0% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.05); opacity: 0.8; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
       `}</style>
-      <div className="flex flex-col items-center min-h-screen p-4 font-sans bg-gray-100 text-gray-800">
+      <div className="flex flex-col items-center min-h-screen p-4 bg-gray-100 text-gray-800">
         <div
-          className="w-4/5 p-8 bg-white shadow-xl rounded-2xl text-center"
+          className="w-full max-w-xl p-8 bg-white shadow-xl rounded-2xl text-center"
           style={{ animation: 'fadeIn 0.5s ease-in-out forwards' }}
         >
           <h2 className="text-3xl font-bold mb-6">Identity Verification</h2>
-          <p className="text-lg mb-6">
-            Please Look  at the Frame   for identity verification.
-          </p>
-          {/* Video container (80% viewport width & height) */}
-          <div className="relative w-4/5 mx-auto h-[80vh] border-2 border-blue-500 rounded-lg overflow-hidden bg-black">
+          <p className="text-lg mb-6">Align your face within the frame for verification.</p>
+
+          <div className="relative w-full h-[60vh] border-2 border-blue-500 rounded-lg overflow-hidden bg-black">
             <video
               ref={videoRef}
               autoPlay
               playsInline
+              muted
               className="w-full h-full object-cover filter brightness-110"
               aria-label="Camera preview"
             />
-            {videoURL && (
-              <video
-                src={videoURL}
+            {photoURL && (
+              <img
+                src={photoURL}
                 className="absolute inset-0 w-full h-full object-cover"
-                aria-label="Recorded video"
+                alt="Captured"
                 style={{ animation: 'fadeIn 0.5s ease-in-out forwards' }}
               />
             )}
-            {recording && (
-              <div
-                className="absolute top-2 right-2 bg-gray-800 bg-opacity-75 text-white px-3 py-1 rounded-full text-lg"
-                style={{ animation: 'pulse 1s infinite' }}
-              >
-                {timer}s
-              </div>
-            )}
-            {/* Face guidance overlay */}
+            <canvas ref={canvasRef} className="hidden" />
             <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-              <div className="w-1/3 h-1/3 border-4 border-dashed border-white rounded-full"></div>
+              <div className="w-1/3 h-1/3 border-4 border-dashed border-white rounded-full" />
             </div>
-            {/* Instruction overlay */}
-            {instructionVisible && !recording && !videoURL && (
+            {instructionVisible && !photoURL && (
               <div
                 className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-50"
                 style={{ animation: 'fadeIn 0.5s ease-in-out forwards' }}
               >
-                <p className="text-2xl font-semibold">
-                  Align your face within the frame
-                </p>
+                <p className="text-2xl font-semibold text-white">Align your face within the frame</p>
               </div>
             )}
           </div>
-          {/* Face detected message */}
-          {faceDetected && recording && (
-            <p className="mt-4 text-xl font-medium text-green-500">
-              Face Detected!
-            </p>
+
+          {faceDetected && (
+            <p className="mt-4 text-xl font-medium text-green-500">Photo Captured!</p>
           )}
           {error && <p className="text-red-500 mt-6 text-lg">{error}</p>}
           {apiMessage && <p className="text-green-500 mt-6 text-lg">{apiMessage}</p>}
-          {/* Processing progress bar */}
+
           {processing && (
-            <div className="w-4/5 mx-auto mt-4">
+            <div className="w-full mt-4">
               <div className="h-4 bg-gray-300 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500"
-                  style={{ width: `${processingProgress}%`, transition: 'width 0.15s ease-out' }}
-                ></div>
+                  style={{
+                    width: `${processingProgress}%`,
+                    transition: 'width 0.15s ease-out',
+                  }}
+                />
               </div>
               <p className="mt-2 text-lg">Processing: {processingProgress}%</p>
             </div>
           )}
+
           <div className="mt-8 flex flex-col gap-4 items-center">
-            {!recording && !processing && !videoURL && (
-              <button
-                onClick={startRecording}
-                className="bg-[#071952] text-white px-8 py-3 rounded-full hover:bg-blue-600 transition-transform transform hover:scale-105 text-lg"
-                style={{borderRadius:'20px'}}
-              >
-                Start Checking
-              </button>
+            {!photoURL && !processing && (
+              <>
+                <button
+                  onClick={startCamera}
+                  className="bg-gray-600 text-white px-6 py-2 rounded-full hover:bg-gray-700 transition-transform transform hover:scale-105 text-lg"
+                >
+                  {cameraActive ? 'Restart Camera' : 'Start Camera'}
+                </button>
+                <button
+                  onClick={capturePhoto}
+                  disabled={!cameraActive || capturing}
+                  className={`${cameraActive ? 'bg-[#071952] hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'} text-white px-8 py-3 rounded-full transition-transform transform hover:scale-105 text-lg`}
+                >
+                  {capturing ? 'Capturing...' : 'Take a Photo'}
+                </button>
+              </>
             )}
-            {recording && (
-              <p className="text-yellow-500 font-semibold text-lg">
-                Recording...
-              </p>
-            )}
+            
             {processing && (
-              <div className="flex justify-center items-center mt-4">
+              <div className="flex flex-col items-center mt-4">
                 <svg
                   className="animate-spin h-10 w-10 text-teal-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -225,23 +383,23 @@ export default function IdentityVerification() {
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  ></circle>
+                  />
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  ></path>
+                  />
                 </svg>
                 <span className="ml-3 text-xl">Processing...</span>
               </div>
             )}
-            {videoURL && !recording && !processing && (
+            
+            {photoURL && !processing && (
               <button
-                onClick={resetRecording}
+                onClick={resetCapture}
                 className="bg-gray-300 text-gray-800 px-8 py-3 rounded-full hover:bg-gray-400 transition-transform transform hover:scale-105 text-lg"
-                style={{borderRadius:'20px'}}
               >
-                Try Again
+                Take New Photo
               </button>
             )}
           </div>

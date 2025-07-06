@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaRegCommentDots, FaBell } from "react-icons/fa";
-import avtmale from "../images/avatar-male.jpg";
-import avtfemale from "../images/avatarfm.png";
+
 import logo from "../images/BoneX_Logo.png";
 import "./nav.css";
 
@@ -14,7 +13,14 @@ const Nav = () => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const profilePicRef = useRef(null);
+  const [isOpen, setisOpen] = useState(false);
+  
+  const togglemenu = () => {
+    setisOpen(!isOpen);
+  };
 
+  const userp = `https://bonex.runasp.net/${user?.profilePicture}`;
+  
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -40,10 +46,66 @@ const Nav = () => {
     }
   }, []);
 
+useEffect(() => {
+  const fetchPatientData = async () => {
+    if (user?.role === "Patient" && user?.token) {
+      try {
+        // Fetch location
+        // const locationResponse = await fetch("https://bonex.runasp.net/Patient/location", {
+        //   method: "GET",
+        //   headers: {
+        //     "Authorization": `Bearer ${user.token}`
+        //   }
+        // });
+        
+        // if (!locationResponse.ok) {
+        //   throw new Error("Failed to fetch location");
+        // }
+        
+        // const locationData = await locationResponse.json();
+        // console.log("Location data:", locationData);
+        
+        // // Format location string
+        // let locationString;
+        // if (locationData.latitude && locationData.longitude) {
+        //   locationString = `${locationData.latitude},${locationData.longitude}`;
+        // } else if (Array.isArray(locationData)) {
+        //   locationString = locationData.join(',');
+        // } else {
+        //   throw new Error("Unexpected location data format");
+        // }
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('user_location', "35.5,35.5");
+        
+        // Get recommendations using location
+        const recommendationResponse = await fetch("https://bonex.runasp.net/Patient/get-recommendations", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${user.token}`
+          },
+          body: formData
+        });
+        
+        if (!recommendationResponse.ok) {
+          const errorText = await recommendationResponse.text();
+          throw new Error(`Recommendations failed: ${recommendationResponse.status} - ${errorText}`);
+        }
+        
+        const recommendationData = await recommendationResponse.json();
+        console.log("Recommendations:", recommendationData);
+        
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      }
+    }
+  };
+  
+  fetchPatientData();
+}, [user]);
   const notifications = [
     { id: 1, message: "You have a new message." },
-    { id: 2, message: "Your appointment is confirmed." },
-    { id: 3, message: "New updates are available." },
   ];
 
   const toggleNotifications = () => {
@@ -62,11 +124,12 @@ const Nav = () => {
 
   return (
     <nav className="navbar">
-      <Link to={user === null ? "/" : user.role === "Patient" ? "/" : "homed"}>
+      <Link to={user === null ? "/" : user.role === "Patient" ? "/" : "homed"} id="logo">
         <img src={logo} alt="Bonex Logo" className="ign" />
       </Link>
+     
       <Link to="/xray">X-ray Checker</Link>
-      <Link to="/doctorsv1">Doctors</Link>
+      <Link to="/doctorsv1" hidden={user?.role === "Doctor"}>Doctors</Link>
 
       {anUser ? (
         <div className="user-logged">
@@ -74,14 +137,14 @@ const Nav = () => {
           <div className="user-profile" style={{ position: "relative" }}>
             <img
               ref={profilePicRef}
-              src={user.gender === 1 ? avtmale : avtfemale}
+              src={userp}
               alt="user-pic"
               onClick={() => setShowUserDropdown(!showUserDropdown)}
               style={{ cursor: "pointer" }}
-            />
+              />
             {showUserDropdown && (
               <div ref={dropdownRef} className="user-dropdown">
-                <Link to={user.role === "Patient" ? "/profile" : "doctorprofile"}>
+                <Link to={user.role === "Patient" ? "/profile" : `doctorprofile/${user?.id}`}>
                   View Profile
                 </Link>
                 <Link to="/changepassword">Change Password</Link>
@@ -89,12 +152,12 @@ const Nav = () => {
             )}
           </div>
 
-          {/* Chat Icon  */}
+          {/* Chat Icon */}
           <Link to="/chat" style={{ marginRight: "10px" }} title="Chat Page">
             <FaRegCommentDots size={24} style={{ cursor: "pointer", color: "#fff" }} />
           </Link>
 
-          {/* Notification Icon  */}
+          {/* Notification Icon */}
           <div className="notification-container" style={{ position: "relative" }}>
             <button
               className="notification-btn"
@@ -102,7 +165,7 @@ const Nav = () => {
               aria-label="Toggle notifications"
               style={{ background: "none", border: "none", cursor: "pointer" }}
               title="Notifications"
-            >
+              >
               <FaBell size={24} className="notification-icon" />
             </button>
             <div className={`notification-dropdown ${showNotifications ? "show" : ""}`}>
@@ -133,7 +196,7 @@ const Nav = () => {
               window.location.reload();
             }}
             style={{ marginLeft: "10px" }}
-          >
+            >
             Logout
           </Link>
         </div>

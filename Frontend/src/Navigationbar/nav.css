@@ -16,7 +16,7 @@
 }
 
 /* Center links container */
-.navbar-center,
+
 .navbar-right {
   display: flex;
   align-items: center;
@@ -254,4 +254,5 @@ position: absolute;
 .notification-btn:hover .notification-icon {
   color: #088395; /* Accent color on hover */
 }
+
 

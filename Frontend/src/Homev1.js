@@ -184,7 +184,7 @@ const Homev1 = () => {
       <ClinicCard />
       <br />
       <div id='doctor-home'>
-      <DoctorsHomev1 />
+      { <DoctorsHomev1 /> }
       </div>
 
       <br />
